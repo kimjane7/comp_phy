@@ -1,104 +1,99 @@
-/* Jane
-*/
+//  Author: Jane Kim
+
+//	This program approximates the solution to the 1D Poisson equation with 
+//  Dirichlet boundary conditions. The algorithm assumes the matrix elements
+//  along the main three diagonals are different. 
 
 
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
 #include <vector>
+#include <stdio.h>
+#include <string> 
+#include <fstream>
+#include <iomanip>
 
+
+using namespace std;
 
 int main(int argc, char *argv[]){
 
-	int max = atoi(argv[1]); // highest power of 10
-	int n;					 // dimension of equation
-	double h;				 // spacing
-	double f;				 // place holder for function value
-	double x;				 // place holder for function input
+	int max = atoi(argv[1]);	 // highest power of 10
+	string filename = argv[2];   // base file name
+	long int n;						 // dimension of matrix
+	double h, hh;		    	 // spacing, spacing squared
+	double f;					 // place holder for function value
+	double err;					 // place holder for relative error
 
+	ofstream ofile;
 
 	// loop through powers of 10
-	for(int i = min; i <= max; i++){
+	for(int i = 1; i <= max; i++){
+
+		string outfile = filename + to_string(i) + ".dat";
 
 		n = (int) pow(10.0,i); // is int large enough for n?
 		h = 1.0/n;
 		hh = h*h;
 
-		double *u = new double[n]; // upper diagonal of A
-		double *d = new double[n]; // diagonal of A
-		double *l = new double[n]; // lower diagonal of A
-		double *b = new double[n]; // Av=b
-		double *v = new double[n]; // Av=b
-		double *v_exact = new double[n]; // Av=b
+		double *x = new double[n]; // function inputs
+		double *a = new double[n]; // lower diagonal
+		double *b = new double[n]; // diagonal 
+		double *c = new double[n]; // upper diagonal
+		double *g = new double[n]; // Av=g
+		double *v = new double[n]; 
+		double *v_exact = new double[n];
 
 		// set-up
 		for(int j = 0; j < n; j++){
 
-			// fill out b and v_exact vectors
-			x = j*h;
-			f = 100.0*exp(-10.0*x);
-			b[j] = hh*f;
-			v_exact[j] = 1.0-(1.0-exp(-10.0))*x-exp(-10*x);
+			// fill out vectors
+			x[j] = (j+0.5)*h;
+			f = 100.0*exp(-10.0*x[j]);
+			g[j] = hh*f;
+			v_exact[j] = 1.0-(1.0-exp(-10.0))*x[j]-exp(-10*x[j]);
 			    
 			// fill out matrix diagonals
-			//read from file for general matrix?
-			u[j] = -1.0;
-			d[j] = 2.0;
-			u[j] = -1.0;
-
-
+			// read from file for general matrix?
+			// WATCH OUT FOR ENDS OF OFF-DIAG
+			a[j] = -1.0;
+			b[j] = 2.0;
+			c[j] = -1.0;
 
 		}
+		a[0]=0;
+		c[n-1]=0;
+
+		// forward substitution
+		c[0] = c[0]/b[0];
+		g[0] = g[0]/b[0];
+		for(int j = 1; j < n; j++){
+			c[j] = c[j]/(b[j]-c[j-1]*a[j]);
+			g[j] = (g[j]-g[j-1]*a[j])/(b[j]-c[j-1]*a[j]);
+		}
+
+		// backward substitution
+		v[n-1] = g[n-1];
+		for(int j = n-2; j > 0; j--){
+			v[j] = g[j]-c[j]*v[j+1];
+		}
+
+		// print 
+		ofile.open(outfile);
+		for(int j = 0; j < n; j++){
+			err = fabs((v[j]-v_exact[j])/v_exact[j]);
+			ofile << setw(15) << setprecision(8) << x[j];
+			ofile << setw(15) << setprecision(8) << v[j];
+			ofile << setw(15) << setprecision(8) << v_exact[j];
+			ofile << setw(15) << setprecision(8) << log10(err) << endl;
+		}
+		ofile.close();
 
 	}
 	
 	
 
-
-
-	// momentum (150-2450 MeV in x-direction)
-	std::vector<double> p; 
-	p.resize(4);
-	p[2] = 0.0;
-	p[3] = 0.0;
-	
-	FILE *fptr;
-	fptr = fopen(argv[2], "w");
-	fprintf(fptr,"# p_x (MeV)    E*dN/d^3p\n");
-
-	// sweep through different values of p_x
-	for(p[1] = 110.0 ; p[1] < 2500.0; p[1] += 10.0) { 
-
-		// energy
-		p[0] = pow(p[1]*p[1]+m*m,0.5);
-
-		//integral with respect to tau
-		EdN_d3p = 0.0;
-		for(tau = tau0+0.5*dtau; tau < tauf; tau += dtau) {
-
-			// radius of surface
-			R = R0-(tau-tau0)*v;
-
-			// radial velocity
-			u = R/R0;
-
-			// bessel functions used in eta integral
-			K0 = boost::math::cyl_bessel_k(0, pow((1.0+u*u),0.5)*p[0]/T );
-			K1 = boost::math::cyl_bessel_k(1, pow((1.0+u*u),0.5)*p[0]/T );
-			I0 = boost::math::cyl_bessel_i(0, p[1]*u/T );
-			I1 = boost::math::cyl_bessel_i(1, p[1]*u/T );
-
-
-			EdN_d3p += (p[0]*v*K1*I0+p[1]*K0*I1)*R*tau*dtau;
-		}
-
-		EdN_d3p = 4*pi*prefactor*EdN_d3p;
-
-		fprintf(fptr,"%lf\t%.10e\n",p[1],EdN_d3p);
-		
-	}
-
-	fclose(fptr);
 
 	return 0;
 }
