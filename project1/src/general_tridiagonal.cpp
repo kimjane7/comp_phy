@@ -2,13 +2,12 @@
 
 //	This program approximates the solution to the 1D Poisson equation with 
 //  Dirichlet boundary conditions. The algorithm assumes the matrix elements
-//  along the main three diagonals are different. 
+//  along the main three diagonals are all different. 
 
 
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
-#include <vector>
 #include <stdio.h>
 #include <string> 
 #include <fstream>
@@ -21,7 +20,7 @@ int main(int argc, char *argv[]){
 
 	int max = atoi(argv[1]);	 // highest power of 10
 	string filename = argv[2];   // base file name
-	long int n;						 // dimension of matrix
+	long int n;					 // dimension of matrix
 	double h, hh;		    	 // spacing, spacing squared
 	double f;					 // place holder for function value
 	double err;					 // place holder for relative error
