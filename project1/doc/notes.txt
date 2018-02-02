@@ -9,15 +9,21 @@ There are many ways to numerically solve the linear equation Av=b, and the effic
 
 	dense.cpp
 
-(2) Assume A is tridiagonal, with all different elements on the three diagonals.
+(2) Assume A is tridiagonal with all different elements on the three diagonals, but solve using gaussian elimination with this assumption
 
-	general_tridiag.cpp
+	tridiag_gen.cpp
 
-(3) Assume A is tridiagonal, with identical elements along the main diagonal, and identical (but different) elements along the two off-diagonals.
+(3)	Assume A is tridiagonal, but solve using Jacobi/Gauss-Seidel iterative method. 
 
-	simple_tridiag.cpp
+	tridiag_iter.cpp
 
-(4) Assume A is exactly the matrix we want. 
+(4) CUBIC SPLINE?
 
-	special_tridiag.cpp
+(5) Assume A is tridiagonal, with identical elements along the main diagonal, and identical (but different) elements along the two off-diagonals.
+
+	tridiagonal_simple.cpp
+
+(6) Assume A is exactly the matrix we want. 
+
+	tridiag_special.cpp
 

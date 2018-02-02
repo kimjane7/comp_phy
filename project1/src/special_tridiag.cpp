@@ -16,6 +16,10 @@
 
 using namespace std;
 
+double f(double x){ return 100.0*exp(-10.0*x); }
+
+double v_exact(double x)
+
 int main(int argc, char *argv[]){
 
 	int max = atoi(argv[1]);	 // highest power of 10

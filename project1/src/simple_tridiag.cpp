@@ -50,15 +50,20 @@ int main(int argc, char *argv[]){
 			f = 100.0*exp(-10.0*x[j]);
 			b[j] = hh*f;
 			v_exact[j] = 1.0-(1.0-exp(-10.0))*x[j]-exp(-10*x[j]);
-			d[j] = (j+1.0)/j;
-			cout << d[j] << endl;
+
 		}
-		d[0] = d[n-1] = 2.0;
+
+		d[0] = 2.0;
+		for(int j = 1; j < n-1; j++){
+			d[j] = (j+1.0)/j;
+		}
+
 
 		// forward subsitution
 		for(int j = 2; j < n; j++) b[j] = b[j]+b[j-1]/d[i-1] ;
 
 		// backward substitution
+		v[n-1] = b[n-1]/d[n-1];
 		for(int j = n-2; j > 0; j--) v[j] = (b[j]+v[j+1])/d[i] ;
 
 		// print 
@@ -66,7 +71,7 @@ int main(int argc, char *argv[]){
 		ofile << "# x, approximate solution, exact solution, log(error)" << endl;
 		for(int j = 0; j < n; j++){
 			err = fabs((v[j]-v_exact[j])/v_exact[j]);
-			ofile << setw(15) << setprecision(8) << d[j];
+			ofile << setw(15) << setprecision(8) << x[j];
 			ofile << setw(15) << setprecision(8) << v[j];
 			ofile << setw(15) << setprecision(8) << v_exact[j];
 			ofile << setw(15) << setprecision(8) << log10(err) << endl;
