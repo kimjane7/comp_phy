@@ -23,6 +23,12 @@
 
 
 \newcommand{\etal}{{\it et~al.}}
+\newcommand{\bperp}{$B_{\perp}$}
+\newcommand{\rxx}{$R_{xx}$}
+\newcommand{\rxy}{$R_{xy}$}
+\newcommand{\sampa}{{\it A}}
+\newcommand{\sampb}{{\it B}}
+\newcommand{\dvv}{$\Delta v/v$}
 
 \providecommand{\abs}[1]{\lvert#1\rvert}
 
@@ -39,7 +45,9 @@
 
 
 \begin{abstract}
-\noindent accurate and informative, state main findings and specific results. 5 pts
+
+\noindent This project aims to approximate the solution to the 1D Poisson equation with Dirichlet boundary conditions, $-u''(x)=f(x)$, by rewriting the problem as a set of linear equations, $A\vec{v}=\vec{b}$. Four algorithms, developed with different initial assumptions about the form of $A$, were implemented in C++ and were tested against a known analytic solution. The methods were also timed and the relative errors between the approximate and exact solutions were studied. The method using standard LU decomposition was the slowest among the four. The other three had comparable computation times, but the simplest algorithm proved to be the most stable for large $n$. 
+
 \end{abstract}
 
 
@@ -47,8 +55,6 @@
 \maketitle
 
 \section{Introduction}
-
-motivate reader, give a status of the problem and major objectibes. state what you have done and give outline of report. 10 pts
 
 The goal of this project was to develop and compare several methods of solving the one-dimensional Poisson equation with Dirichlet boundary conditions. More explicitly, we aimed to solve
 \begin{equation}
@@ -81,16 +87,14 @@ f_(x_1)\\f_(x_2)\\ \vdots \\ f_(x_{n-1})\\ f_(x_n)
 
 There exists many different methods for solving Equation (3) for $\vec{v}$, but the efficiency of the methods discussed in this report were mainly dependent on the initial assumptions of the form of $A$. Four different algorithms were implemented according to the following assumptions: (i) $A$ is dense, (ii) $A$ is tridiagonal, (iii) $A$ is symmetric and tridiagonal, and (iv) $A$ has the form shown in Equation (3).\\
 
-In Section II, the four different algorithms are presented. In Section III, FINISH
+Section II describes the four different algorithms. In Section III, the tests and timings of the algorithms are discussed. Results are presented in Section IV, along with some commentary. And finally, Section V concludes this report.
 
 
 \section{Methods}
 
-discuss the methods used and their basis/suitability. give a presentation of algorithm and possible errors and flops! discuss assumptions of algorithms and titles of subsections below (correspond to programs in src). 20 pts
-
 \subsection{LU Decomposition with Armadillo}
 
-This method uses standard LU decomposition to solve Equation (3) with no prior assumptions about the form of $A$. While this algorithm is simple to write (especially with Armadillo) and is more efficient than Gaussian elimination, the fact that $A$ has more zeros than non-zero elements results in a relatively long computation time and storage issues for large $n$. For instance, running the program with $n=10^5$ resulted in an early termination due to lack of available memory. The number of floating point operations (FLOPS) for LU decomposition is $\sim \frac{2}{3}n^3$ for large $n$. CITE PROF
+This method uses standard LU decomposition to solve Equation (3) with no prior assumptions about the form of $A$. While this algorithm is simple to write (especially with Armadillo) and is more efficient than Gaussian elimination, the fact that $A$ has more zeros than non-zero elements results in a relatively long computation time and storage issues for large $n$. For instance, running the program with $n=10^5$ resulted in an early termination due to lack of available memory. The number of floating point operations (FLOPS) for LU decomposition is $\sim \frac{2}{3}n^3$ for large $n$.
 
 \subsection{General Tridiagonal Matrix}
 
@@ -162,11 +166,9 @@ v_i = \begin{cases}
 
 \noindent which together uses $\sim 4 n$ FLOPS. Clearly, this is the least number of floating point operations among the four methods discussed in this report, but this simple algorithm is the least versatile, as it solves Equation (3) only. \\
 
-Since many programming languages use zero-based numbering, one may need to alter the equation for $d_i$ slightly: $d_i = \frac{i+2}{i+1}$, $i=0,...,n-1$. 
+\textit{Note:} Since many programming languages use zero-based numbering, one may need to alter the equation for $d_i$ slightly: $d_i = \frac{i+2}{i+1}$, $i=0,...,n-1$. 
 
 \section{Implementation}
-
-discuss how you implemented algorithms, tested algo, timings of algos, benchmark calculations. clarity/readability of code? 20 pts.
 
 All four programs require a maximum power of 10 and a file name in the command line. Then the programs loop through successive powers of 10 for the number of grid points $n$. In each pass of the loop, a final file name is designated with the corresponding power of 10. 
 
@@ -178,11 +180,12 @@ For methods B-D, example file outputs for $n=10^1,...,10^6$ can be found in the 
 
 \section{Results and Analysis}
 
+The computation times for all four programs are shown in Table 1. LU decomposition (A) requires the most computation time and is unable to produce the solutions for $n>10^3$ in a relatively timely manner. The times for the general tridiagonal matrix (B) and the symmetric tridiagonal matrix (C) algorithms are comparable to each other, but a few orders of magnitude faster than LU decomposition. The simple tridiagonal matrix algorithm (D) produces the fastest results out of the four methods, but only by a small margin considering methods B and C require twice as many FLOPS as method D. 
 
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c||c|c|c|c|c|c|}
 \hline
-$n=$&10&$10^2$&$10^3$&$10^4$&$10^5$&$10^6$\\
+$n$&10&$10^2$&$10^3$&$10^4$&$10^5$&$10^6$\\
 \hline
 \hline
 A & $2.1E-4$ &$1.4E-4$&$0.288$& N/A & N/A & N/A\\
@@ -196,36 +199,56 @@ D & $1.0E-6$ &$3.0E-6$&$3.1E-5$& $3.2E-4$ & $2.5E-3$ & $0.024$\\
 \end{tabular}
 \vspace{2mm}
 
-\textit{Table 1.} Time used for computation (in seconds) for methods A, B, C, and D and for $n=10-10^6$. Benchmark calculations can be found in 'benchmark' folder under 'report'.
+\textit{Table 1.} Time used for computation (in seconds) for methods A, B, C, and D and for $n=10-10^6$. Benchmark calculations can be found in the 'benchmark' folder under 'report'.
 \end{center}
 
+The relative errors between the discretized approximation and the closed-form solution are presented in Table 2. For $n\leq 10^4$, the logarithms of the errors are largely the same and behave as expected for this particular approximation of the second derivative, i.e. $\log(err)$ vs. $h$ has a slope of 2. However, the table suggests methods B and C begin to succumb to rounding errors for $n > 10^4$ since the slope just starts to drop. Then for $n = 10^6$ the errors are much larger. Thus, methods B and C are optimal for $n\approx 10^4-10^5$. On the other hand, method D continues to have a slope of 2 for all $n$ values tested, so the optimal range for $n$ could be even greater than $10^6$.
 
 
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|}
+\hline
+$n$&10&$10^2$&$10^3$&$10^4$&$10^5$&$10^6$\\
+\hline
+\hline
+A & $-1.180$ &$-3.088$&$-5.080$& N/A & N/A & N/A\\
+\hline
+B & ''   '' & ''   ''& ''  ''& -7.079 & -8.889 & -6.167\\
+\hline
+C & ''   '' & ''   ''& ''  ''& ''   '' & ''   '' & ''   ''\\
+\hline
+D & ''   '' & ''   ''& ''  ''& ''   '' & -9.079 & -11.083\\
+\hline 
+\end{tabular}
+\vspace{2mm}
+
+\textit{Table 2.} The logarithm of the average relative error for methods A, B, C, and D and for $n=10-10^6$. The quotations indicate repeated values from above. 
+\end{center}
+
+The discretized approximation appears to converge quite quickly to the analytic solution as $n$ increases, considering the two look almost identical for $n>100$ (See Figure 1). Figure 1 was specifically generated using the output from the simple tridiagonal matrix algorithm (D), but analogous plots from the other three algorithms are numerically identical for $n=10, 100, 1000$. 
 
 \begin{center}
 \begin{figure*}
 \includegraphics[scale=0.7]{compare_simple}
-\end{figure*}
+
 \textit{Figure 1.} The discretized solution $v_i$ for various $n$ are plotted alongside the closed-form solution $u(x)$. For $n>100$, the approximate and exact solutions are almost indistinguishable. 
+\end{figure*}
 \end{center}
 
 
-discuss main finidings, link them up with existing literature, discuss eventual errors, effectiveness of your algorithm, stability of the calculations. 20 pts
-
-The computation times for all four programs are shown in Table 1. 
-
+\vspace{5 cm}
 \section{Conclusion}
-summary of discussions and critical comments. 
-what was learned about the methods i used? and results obtained? 
-what about weird things when i was writing the code?
-future improvements and possible directions?
-comparison with iterative methods?
-10pts\\
 
-clarity of figures/overall presentation: 10 pts.
-references: 5 pts
+Of the four methods studied here, the simple tridiagonal matrix algorithm (D) was the fastest and most stable for large $n$. However, it was limited in scope because it was developed for this particular discretization of the second derivative. If we had instead included additional terms in Equation (2), the matrix $A$ would no longer be tridiagonal and only LU decomposition would have the versitility to solve Equation (3).\\
+
+This study could be further expanded to include iterative methods, such as the Gauss-Seidel method discussed in class. It may also be interesting to test other functions $f(x)$ that have analytic solutions. \\
+
+I tried to get my references to show up, but the \LaTeX package I've used in the past is no longer working for some reason... I would mainly like to cite the class lecture notes.
 
 \newpage
-blah biddy blah
+
+\ \ \ \ \ 
+
+
 
 \end{document}
