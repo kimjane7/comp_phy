@@ -3,7 +3,7 @@ project 1:
 	benchmark:
 
 		- contains sample file outputs for programs in folder src.
-		- each file is named according to corresponding program output and maximum power of 10^i.
+		- each file is named according to corresponding program output and maximum power of 10^i. e.g. LU3.dat is the output from running LU_decomp.cpp with n = 10^3.
 		- additional information printed in each file. 
 
 		figures:

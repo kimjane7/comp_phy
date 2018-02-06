@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
 		ofile << "# max relative error = " << maxerr << endl;
 		ofile << "# min relative error = " << minerr << endl;
 		ofile << "# avg relative error = " << avgerr << endl;
-		ofile << "# function input (x), approx solution (v), exact solution (u), relative error" << endl;
+		ofile << "# function input (x), approx solution (v), exact solution (u), log(relative error)" << endl;
 		for(int j = 0; j < n; j++){
 			ofile << setw(15) << setprecision(8) << x[j];
 			ofile << setw(15) << setprecision(8) << v[j];
