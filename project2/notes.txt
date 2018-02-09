@@ -1,0 +1,9 @@
+goal: develop an eigenvalue solver based on Jacobi's method, learn about scaling of equations, units tests, compare to other eigenvalue solvers.
+
+test the eigenvalue solver with the Toeplitz matrix from project 1
+
+buckling beam problem: gamma*u''(x)=-Fu(x)
+                       x in [0,L]
+                       F is a force applied at (x,y)=(L,0) 
+                       u(0)=u(L)=0
+
