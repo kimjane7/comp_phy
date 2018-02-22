@@ -1,5 +1,7 @@
+// Author: Jane Kim
+
 // This program calls armadillo functions to solve for eigenvalues 
-// and eigenvectors of the Toeplitz matrix.
+// and eigenvectors of a tridiagonal Toeplitz matrix.
 
 #include <iostream>
 #include <cmath>
