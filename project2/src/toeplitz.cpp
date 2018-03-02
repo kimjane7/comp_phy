@@ -2,10 +2,37 @@
 
 #include "jacobi.h"
 
+void check_eigenvalues(mat& A, int n, double a, double d){
+
+	vec eigvals(n);
+	double lambda;
+
+	for(int i = 0; i < n; i++){
+		eigvals(i) = A(i,i);
+	}
+
+	sort(eigvals.begin(),eigvals.end());
+
+	// check if eigenvalues are correct
+	cout << left << "* EIGENVALUES *\n";
+	cout << showpoint;
+	cout << setw(15) << "Calculated:";
+	cout << setw(15) << "Exact:" << endl;
+
+	for(int i = 0; i < n; i++){
+
+		lambda = d+2.0*a*cos((i+1)*pi/(n+1));
+
+		cout << setprecision(10) << setw(15) << eigvals(i); 
+		cout << setprecision(10) << setw(15) << lambda << endl;
+	}
+
+	cout << endl;
+}
+
 int main(int argc, char *argv[]){
 
-	int n, k, l, iterations = 0;
-	double max_offdiag, Aij; 
+	int n;
 
 	if(argc < 1){ cout << "Input dimension of matrix." << endl; }
 	else{ n = atoi(argv[1]); }
@@ -13,8 +40,10 @@ int main(int argc, char *argv[]){
 	double h = 1.0/n, hh= h*h;
 	double d = 2.0/hh, a = -1.0/hh;
 	double time, epsilon = 1E-5;
+	double max_offdiag, Aij; 
+	int k, l, iterations = 0;
 
-	// set-up matrix to diagonalize
+	// set-up toeplitz matrix to diagonalize
 	mat A = zeros<mat>(n,n);
 	for(int i = 0; i < n-1; i++){
 		A(i,i) = d;
@@ -25,7 +54,6 @@ int main(int argc, char *argv[]){
 
 	// set-up matrix of eigenvectors
 	mat V = eye<mat>(n,n);
-	
 
 	// start timer
 	clock_t initial, final;
@@ -38,8 +66,6 @@ int main(int argc, char *argv[]){
 
 		rotate(A, V, k, l, n);
 
-		// print_matrix(A,n);
-
 		iterations += 1;
 	}
 
@@ -50,10 +76,10 @@ int main(int argc, char *argv[]){
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
 
-	print_eigenvalues(A,n,a,d);
+	check_eigenvalues(A,n,a,d);
 
-	// cout << "* EIGENVECTORS *" << endl;
-	// print_matrix(V,n);
+	cout << "* EIGENVECTORS *" << endl;
+	print_matrix(V,n);
 
 
 	return 0;

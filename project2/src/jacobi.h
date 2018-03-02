@@ -19,6 +19,5 @@ double norm_sq(mat& A, int n);
 void get_pivot(mat& A, int n, int& k, int& l);
 void rotate(mat& A, mat& V, int k, int l, int n);
 void print_matrix(mat& A, int n);
-void print_eigenvalues(mat& A, int n, double a, double d);
 
 #endif
