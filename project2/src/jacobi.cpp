@@ -61,8 +61,8 @@ void rotate(mat& A, mat& V, int k, int l, int n){
 
 		// calculate angle of rotation
 		tau = 0.5*(All-Akk)/Akl;
-		if(tau >= 0.0){ t = -tau+sqrt(1.0+tau*tau); }
-		else{ t = -tau-sqrt(1.0+tau*tau); }
+		if(tau >= 0.0){ t = -tau-sqrt(1.0+tau*tau); }
+		else{ t = -tau+sqrt(1.0+tau*tau); }
 
 		cc = 1.0/(1.0+t*t);
 		ss = 1.0-cc;

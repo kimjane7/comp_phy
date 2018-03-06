@@ -1,14 +1,15 @@
-#include <string> 
+// g++ -std=c++11 harmonic_oscillator.cpp jacobi.cpp -o HO -larmadillo
+
 #include "jacobi.h"
 
 const double hbar = 1.0545718E-34; // Js
 
-void check_eigenvalues(mat& H, int n, double a, double d){
+void check_eigenvalues(mat& H, int N, double a, double d){
 
 	vec eigvals(n);
 	double lambda;
 
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < N; i++){
 		eigvals(i) = H(i,i);
 	}
 
@@ -20,7 +21,7 @@ void check_eigenvalues(mat& H, int n, double a, double d){
 	cout << setw(15) << "Calculated:";
 	cout << setw(15) << "Exact:" << endl;
 
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < N; i++){
 
 		lambda = 3.0+i*4.0;
 
@@ -31,27 +32,26 @@ void check_eigenvalues(mat& H, int n, double a, double d){
 	cout << endl;
 }
 
-void print(mat& D, mat& U, vec& rho, int n, string filename){
+void print_to_file(mat& D, mat& U, vec& rho, int N, string filename){
 
 
 	ofstream ofile;
-	double lambda;
-	vec eigvals(n);
+	double lambda, u, uu;
+	vec eigvals(N);
 	ivec index(3);
 
 	// sort eigenvectors by ascending order
-	for(int i = 0; i < n; i++){
+	for(int i = 0; i < N; i++){
 		eigvals(i) = D(i,i);
 	}
 	sort(eigvals.begin(),eigvals.end());
 
 	// get indices of lowest 3 eigenvalues
 	for(int i = 0; i < 3; i++){
-		for(int j = 0; j < n; j++){
+		for(int j = 0; j < N; j++){
 			if(eigvals(i) == D(j,j)) index(i) = j;
 		}
 	}
-
 
 	// print u(rho) for lowest three eigenvalues
 	for(int j = 0; j < 3; j++){
@@ -64,46 +64,59 @@ void print(mat& D, mat& U, vec& rho, int n, string filename){
 		ofile << "# exact eigenvalue = " << lambda << endl;
 		ofile << "# rho = r/alpha, eigenvector = u(rho)" << endl;
 
-		for(int i = 0; i < n; i++){
-			ofile << rho(i) << "\t" << U(i,index(j)) << endl;
+		for(int i = 0; i < N; i++){
+			u = U(i,index(j));
+			uu = u*u;
+			ofile << rho(i) << "\t" << u << "\t" << uu << endl;
 		}
 		ofile.close();
 	}
 }
 
+
 int main(int argc, char *argv[]){
 
-	int n, k, l;
+	int N, k, l;
 	double m, w;
 
-	if(argc < 1){ cout << "Input number of mesh points n." << endl; }
+	if(argc < 1){ cout << "Input number of mesh points N." << endl; }
 	else{ 
-		n = atoi(argv[1]);
+		N = atoi(argv[1]);
 	}	
 
-	double rhomin = 0.0, rhomax = 5.0;
-	double h = (rhomax-rhomin)/n, hh = h*h;
+	double rhomin = 0.0, rhomax = 10.0;
+	double h = (rhomax-rhomin)/N, hh = h*h;
 	double d = 2.0/hh, a = -1.0/hh;
 	double epsilon = 1E-8, time;
 
-	// set up rho and potential vectors
-	vec rho(n), V(n);
-	for(int i = 0; i < n; i++){
-		rho(i) = rhomin + i*h;
+	// set up rho and potential
+	vec rho(N), V(N);
+	for(int i = 0; i < N; i++){
+		rho(i) = rhomin + (i+0.5)*h;
 		V(i) = rho(i)*rho(i);
 	}
 
 	// set-up Hamiltonian
-	mat H = zeros<mat>(n,n);
-	for(int i = 0; i < n-1; i++){
+	mat H = zeros<mat>(N,N);
+	for(int i = 0; i < N-1; i++){
 		H(i,i) = d+V(i);
 		H(i+1,i) = a;
 		H(i,i+1) = a;
 	}
-	H(n-1,n-1) = d+V(n-1);	
+	H(N-1,N-1) = d+V(N-1);	
+
+	
+	// ARMA TEST
+	vec eigvals(N);
+	eig_sym(eigvals,H);
+
+	for(int i = 0; i < N; i++){
+		cout << setw(15) << setprecision(8) << eigvals(i) << endl;
+	}
+	
 
 	// set-up matrix of eigenvectors
-	mat U = eye<mat>(n,n);
+	mat U = eye<mat>(N,N);
 
 	// start timer
 	clock_t initial, final;
@@ -111,11 +124,11 @@ int main(int argc, char *argv[]){
 
 	// solve for eigenvalues and eigenvectors
 	int iterations = 0;
-	while(offdiag_sq(H,n) > epsilon){
+	while(offdiag_sq(H,N) > epsilon){
 
-		get_pivot(H, n, k, l);
+		get_pivot(H, N, k, l);
 
-		rotate(H, U, k, l, n);
+		rotate(H, U, k, l, N);
 
 		iterations += 1;
 	}
@@ -127,12 +140,12 @@ int main(int argc, char *argv[]){
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
 
-	check_eigenvalues(H,n,a,d);
+	check_eigenvalues(H,N,a,d);
 
 	//cout << "* EIGENVECTORS *" << endl;
 	//print_matrix(U,n);
 
-	print(H, U, rho, n, "oscillator");
+	//print_to_file(H, U, rho, n, "oscillator");
 
 	return 0;
 }
