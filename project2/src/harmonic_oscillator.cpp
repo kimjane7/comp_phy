@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 	// set up rho and potential
 	vec rho(N), V(N);
 	for(int i = 0; i < N; i++){
-		rho(i) = rhomin + (i+0.5)*h;
+		rho(i) = rhomin + i*h;
 		V(i) = rho(i)*rho(i);
 	}
 
