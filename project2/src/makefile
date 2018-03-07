@@ -3,7 +3,7 @@ CFLAGS = -std=c++11
 LIB = -larmadillo
 PROG = testcode
 
-all: toeplitz harmonic quantum
+all: toeplitz harmonic quantum ${PROG}
 
 toeplitz: toeplitz.cpp jacobi.cpp
 	${CC} ${CFLAGS} toeplitz.cpp jacobi.cpp -o toeplitz $(LIB)

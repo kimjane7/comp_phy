@@ -80,19 +80,12 @@ TEST_CASE("TEST: Tridiagonal Toeplitz matrix eigenvalues"){
 
 TEST_CASE("TEST: Eigenvector orthogonality"){
 
-	int N = 4, k, l;
-	double dot;
+	int N = 6, k, l;
+	double dot, epsilon = 1E-5;;
 
-	mat A = zeros<mat>(N,N);
-	for(int i = 0; i < N-1; i++){
-		A(i,i) = 2.0;
-		A(i+1,i) = -1.0;
-		A(i,i+1) = -1.0;
-	}
-	A(N-1,N-1) = 2.0;
-
+	mat R = randu<mat>(N,N);
+	mat A = R.t()*R;
 	mat U = eye<mat>(N,N);
-	double epsilon = 1E-5;
 
 	while(offdiag_sq(A, N) > epsilon){
 		get_pivot(A, N, k, l);
@@ -110,4 +103,34 @@ TEST_CASE("TEST: Eigenvector orthogonality"){
 			}
 		}
 	}
+}
+
+TEST_CASE("TEST: Compare eigenvalues with Armadillo"){
+
+	int N = 6, k, l;
+	double epsilon = 1E-5;
+
+	mat R = randu<mat>(N,N);
+	mat A = R.t()*R;
+	mat U = eye<mat>(N,N);
+
+	vec eigvals_arma = eig_sym(A);
+	vec eigvals(N);
+	
+	
+	while(offdiag_sq(A, N) > epsilon){
+		get_pivot(A, N, k, l);
+		rotate(A, U, k, l, N);
+	}
+
+	for(int i = 0; i < N; i++){
+		eigvals(i) = A(i,i);
+	}
+
+	sort(eigvals.begin(),eigvals.end());
+
+	for(int i = 0; i < N; i++){
+		REQUIRE(eigvals(i) == Approx(eigvals_arma(i)));
+	}
+
 }
