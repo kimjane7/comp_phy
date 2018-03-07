@@ -18,6 +18,9 @@
 %\usepackage{fancyhdr}
 \usepackage{nicefrac}
 \usetikzlibrary{arrows,shapes,positioning}
+\newenvironment{psmallmatrix}
+  {\left[\begin{matrix}}
+  {\end{matrix}\right]}
 
 
 \newcommand{\etal}{{\it et~al.}}
@@ -34,7 +37,7 @@
 
 
 \begin{abstract}
-\noindent As normal fluid helium (HeI) is cooled below the lambda point, T$_\lambda=2.17$ K, it undergoes a distinct transition to superfluid helium (HeII) which exhibits some peculiar properties. For instance, heat (or entropy) travels according to a classical wave equation instead of the usual diffusion equation in HeII, resulting in the phenomenon known as second sound. The speed of second sound was determined at $T =$ 1.67, 1.96, 2.09, 2.15, and 2.16 K by measuring the resonance frequencies of a transducer cavity. The results were consistent with data published by R.J. Donnelly (1967).\\
+\noindent Abstract\\
 \end{abstract}
 
 
@@ -44,15 +47,88 @@
 \section{Introduction}
 
 Many problems in physics are difficult, if not impossible, to solve analytically. However, in many cases, they can be reduced to relatively simple eigenvalue problems which can be solved numerically. In this project, we developed an eigenvalue and eigenvector solver using Jacobi's algorithm for real, symmetric matrices in order to solve three different examples of such problems with varying levels of complexity.
+\subsection{Buckling Beam}
+For the simplest of the three problems, we consider a beam of length $L$, whose vertical displacement in the $y$-direction is $u(x)$ for $x \in [0,L]$. If $R$ is some constant which reflects the properties, such as the rigidity, of the beam and a force $F$ is applied at $x=L$ towards the origin, the vertical displacement $u(x)$ satisfies the differential equation
+\begin{equation}
+R\frac{d^2 u(x)}{dx^2} = -Fu(x),
+\end{equation}
+with homogenous boundary conditions $u(0)=u(L)=0$. Since different combinations of the physical paramters $F, R$, and $L$ can yield the same solution, it is beneficial to introduce the dimensionless quantity $\rho = \frac{x}{L}$ to scale the differential equation. Then (1) becomes
+\begin{equation}
+\frac{d^2 u(\rho)}{d\rho^2} = -\lambda u(\rho),
+\end{equation}
+where $\lambda = FL^2/R$ and $\rho \in [0,1]$. For a given number of mesh points $N$, we can obtain a discretized approximation to $u(\rho)$ by rewriting (2) as an eigenvalue problem given by
+\begin{align}
+\label{eqn:eqlabel}
+\begin{split}
+A\vec{u} &= \lambda \vec{u},
+\\
+\begin{psmallmatrix} d&a& \\
+a&d&a\\
+&\ddots&\ddots&\ddots\\
+&&a&d&a\\
+&&&a&d\\
+\end{psmallmatrix}
+\begin{psmallmatrix}
+u_1\\u_2\\ \vdots \\ u_{N-2}\\ u_{N-1}
+\end{psmallmatrix}&=
+\lambda
+\begin{psmallmatrix}
+u_1\\u_2\\ \vdots \\ u_{N-2}\\ u_{N-1}
+\end{psmallmatrix},\\
+u_i &= u(\rho_i),\\
+\rho_i &= ih,\\
+\end{split}
+\end{align}
+where $d = 2/h^2$, $a = -1/h^2$, $h = 1/N$ is the step size. At the endpoints, $u_0 = u_N = 0$. This Toeplitz matrix has analytic eigenvalues
+\begin{equation}
+\lambda_i = d+2a\cos \left( \frac{i \pi}{N+1} \right) , \ \ \ i = 1, 2, ..., N-1,
+\end{equation}
+which we used to check the accuracy of the eigenvalue solver.
 
-Superfluidity is a remarkable manifestation of quantum mechanics at the macroscopic level. It was first observed in helium-4, and later in helium-3, after cooling to temperatures near absolute zero. Characterized by apparent frictionless flow\cite{nwe}, superfluids are closely related to Bose-Einstein condensates\cite{phy} and exhibit many strange properties. This paper aims to discuss and measure one of the most peculiar of these properties in superfluid helium-4, the phenomenon of second sound.\\
+\subsection{One Electron Harmonic Oscillator}
+Jacobi's algorithm is applicable for any real, symmetric matrix, so the same program we developed to solve the buckling beam problem can be used to solve the time-independent Schr{\"o}dinger equation for one and two electrons in a three-dimensional harmonic oscillator potential. For one electron with $l=0$, we substitute $R(r)=u(r)/r$ into the radial equation and introduce a dimensionless variable $\rho = r/\alpha$ to obtain
+\begin{equation}
+\left( -\frac{\hbar^2}{2m\alpha^2} \frac{d^2}{d\rho^2} + \frac{1}{2}m\omega^2\alpha^2\rho^2 \right) u(\rho) = E u(\rho). 
+\end{equation}
+By fixing $\alpha=(\hbar/m\omega)^{1/2}$ and letting $\lambda=2m\alpha^2 E/\hbar^2 = 2E/\hbar\omega$, (5) becomes 
+\begin{equation}
+\left( -\frac{d^2}{d\rho^2} + \rho^2 \right) u(\rho) = \lambda u(\rho).
+\end{equation}
+The boundary conditions are $u(0)=\lim_{\rho \rightarrow \infty} u(\rho)=0$, but due to the finite nature of discretizing the differential equation, we must define a window $[\rho_{min}, \rho_{max}]$ on which to compute the eigenvalues and eigenvectors. Then the discretized equation is given by
+\begin{equation}
+-\frac{1}{h^2} u_{i-1} + \left( \frac{2}{h^2} + \rho_i^2 \right) u_i -\frac{1}{h^2} u_{i+1} = \lambda u_i, 
+\end{equation}
+where $h=(\rho_{max}-\rho_{min})/N$, $\rho_i = \rho_{min} + ih$, $i = 1, ..., N-1$. Therefore, the only difference between this eigenvalue problem and the buckling beam problem is that the diagonal elements have an additional non-constant term $\rho_i^2$. This problem also has analytic eigenvalues given by $\lambda = 3, 7, 11, 15, ...$ .
 
-At atmospheric pressures, ordinary liquid helium (HeI) has a boiling temperature of 4.14 K. As the vapor pressure above the liquid is reduced to about 38 Torr\cite{phy} by a vacuum pump, the normal HeI undergoes a distinct second-order phase transition to superfluid HeII, with a transition temperature of T$_\lambda=2.17$ K (the lambda point). \\
+EIGENVALUE CALCULATIONS ARE MOST ACCURATE WHEN WINDOW CONTAINS VALUES OF RHO FOR WHICH THE CORRESPONDING EIGENVECTOR (OR U(RHO)) IS NOT IDENTICALLY $\approx 0$
 
-Liquid HeII has strikingly different properties from HeI. For instance, as HeI transitions to HeII at the lambda point, the rapid boiling suddenly ceases due to the sharp increase of the heat capacity of liquid helium. HeII may also have seemingly contradictory measurements of viscosity, depending on the method by which it is measured. When observing capillary flow, HeII appears to have no viscosity at all. But when observing bulk flow, the viscosity is clearly non-zero. Furthermore, the heat conductivity of HeII is notably high, hundreds of times greater than copper. The most interesting property of superfluid HeII involves the phenomenon of second sound. Unlike the usual pressure (or density) wave of first sound, second sound is an heat (or entropy) wave. \cite{stanford}
+\subsection{Two Electron Harmonic Oscillator}
 
+When the repulsive Coulomb interaction is ignored, the Hamiltonian $H_0$ for two electrons in a harmonic oscillator can be written with respect to the center-of-mass coordinate $\mathbf{R}=(\mathbf{r}_1+\mathbf{r}_2)/2$ and the relative coordinate $\mathbf{r}=\mathbf{r}_1-\mathbf{r}_2$:
+\begin{align}
+\label{eqn:eqlabel}
+\begin{split}
+H_0(r,R) &= H_0(r) + H_0(R)\\
+H_0(r) &=-\frac{\hbar^2}{m} \frac{d^2}{dr^2} + \frac{1}{4} k r^2\\
+H_0(R) &= -\frac{\hbar^2}{4m} \frac{d^2}{dR^2} + kR^2
+\end{split}
+\end{align}
+where $k=m\omega^2$. Then with the Coulomb interaction
+\begin{equation}
+V(r) = \frac{\beta e^2}{r}, \ \ \ \beta e^2 = 1.44 \ \text{eV} \cdot \text{nm}
+\end{equation}
+the $r$-dependent Schr{\"o}dinger equation is given by
+\begin{equation}
+H(r)\psi(r)=[H_0(r)+V(r)]\psi(r)=E_r \psi(r)
+\end{equation}
+As with one electron case, we substitute the dimensionless variable $\rho=r/\alpha$ in (10) to obtain
+\begin{equation}
+\left( -\frac{d^2}{d\rho^2} + \omega_r^2\rho^2 + \frac{1}{\rho}\right) \psi(\rho) = \lambda\psi(\rho).
+\end{equation}
+Here, we have defined $\alpha=\hbar^2/m\beta e^2$ and $\lambda = $ 
+$m\alpha^2E/\hbar^2$. Thus the two electron case simply adds another term $\rho_i$ to the diagonal elements of $A$ from the one electron case. 
 
-\section{THEORY}
+\section{METHOD}
 
 
 The two-fluid model provides a means of explaining some of the strange properties of HeII. This model considers HeII to have two separate components: the normal fluid component and the superfluid component. The former behaves like a typical fluid, while the latter is said to have zero entropy and zero viscosity. Above the lambda point, liquid helium consists entirely of the normal fluid component. But as it is cooled below $T_\lambda$, the superfluid component increases until the liquid helium is completely superfluid at absolute zero.  

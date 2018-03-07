@@ -1,33 +1,5 @@
 #include "jacobi.h"
 
-void check_eigenvalues(mat& H, int N, double a, double d){
-
-	vec eigvals(N);
-	double lambda;
-
-	for(int i = 0; i < N; i++){
-		eigvals(i) = H(i,i);
-	}
-
-	sort(eigvals.begin(),eigvals.end());
-
-	// check if eigenvalues are correct
-	cout << left << "* EIGENVALUES *\n";
-	cout << showpoint;
-	cout << setw(15) << "Calculated:";
-	cout << setw(15) << "Exact:" << endl;
-
-	for(int i = 0; i < N; i++){
-
-		lambda = 3.0+i*4.0;
-
-		cout << setprecision(10) << setw(15) << eigvals(i); 
-		cout << setprecision(10) << setw(15) << lambda << endl;		
-	}
-
-	cout << endl;
-}
-
 void print_to_file(mat& D, mat& U, vec& rho, int N, string filename){
 
 
@@ -80,14 +52,14 @@ int main(int argc, char *argv[]){
 	}	
 
 	double rhomin = 0.0, rhomax = 10.0;
-	double h = (rhomax-rhomin)/N, hh = h*h;
+	double h = (rhomax-rhomin)/(N+1), hh = h*h;
 	double d = 2.0/hh, a = -1.0/hh;
 	double epsilon = 1E-8, time;
 
 	// set up rho and potential
 	vec rho(N), V(N);
 	for(int i = 0; i < N; i++){
-		rho(i) = rhomin + i*h;
+		rho(i) = rhomin + (i+1.0)*h;
 		V(i) = rho(i)*rho(i);
 	}
 
@@ -124,11 +96,6 @@ int main(int argc, char *argv[]){
 	cout << "\nComputation Time = " << time << " s\n";
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
-
-	//check_eigenvalues(H,N,a,d);
-
-	//cout << "* EIGENVECTORS *" << endl;
-	//print_matrix(U,N);
 
 	print_to_file(H, U, rho, N, "oscillator");
 

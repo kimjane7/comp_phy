@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 	}	
 
 	double rhomin = 0.0, rhomax = 7.0;
-	double h = (rhomax-rhomin)/N, hh = h*h;
+	double h = (rhomax-rhomin)/(N+1), hh = h*h;
 	double d = 2.0/hh, a = -1.0/hh;
 	double epsilon = 1E-8, time, u, u0;
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 	// set up rho and potential, with (V) and without (V0) Coulomb interaction
 	vec rho(N), V0(N), V(N);
 	for(int i = 0; i < N; i++){
-		rho(i) = rhomin + (i+0.5)*h;
+		rho(i) = rhomin + (i+1.0)*h;
 		V0(i) = omega*omega*rho(i)*rho(i);
 		V(i) = V0(i) + 1.0/rho(i);
 	}
