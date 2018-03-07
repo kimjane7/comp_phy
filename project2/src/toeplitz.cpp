@@ -1,34 +1,5 @@
-// g++ -std=c++11 toeplitz.cpp jacobi.cpp -o toeplitz -larmadillo
-
 #include "jacobi.h"
 
-void check_eigenvalues(mat& A, int n, double a, double d){
-
-	vec eigvals(n);
-	double lambda;
-
-	for(int i = 0; i < n; i++){
-		eigvals(i) = A(i,i);
-	}
-
-	sort(eigvals.begin(),eigvals.end());
-
-	// check if eigenvalues are correct
-	cout << left << "* EIGENVALUES *\n";
-	cout << showpoint;
-	cout << setw(15) << "Calculated:";
-	cout << setw(15) << "Exact:" << endl;
-
-	for(int i = 0; i < n; i++){
-
-		lambda = d+2.0*a*cos((i+1)*pi/(n+1));
-
-		cout << setprecision(10) << setw(15) << eigvals(i); 
-		cout << setprecision(10) << setw(15) << lambda << endl;
-	}
-
-	cout << endl;
-}
 
 int main(int argc, char *argv[]){
 
@@ -75,8 +46,6 @@ int main(int argc, char *argv[]){
 	cout << "\nComputation Time = " << time << " s\n";
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
-
-	check_eigenvalues(A,n,a,d);
 
 	cout << "* EIGENVECTORS *" << endl;
 	print_matrix(V,n);

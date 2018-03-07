@@ -1,0 +1,239 @@
+\documentclass[prb,aps,twocolumn,showpacs,10pt]{revtex4-1}
+\pdfoutput=1
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+
+%\usepackage{anysize}
+\usepackage[colorlinks,hyperindex, urlcolor=blue, linkcolor=blue,citecolor=black, linkbordercolor={.7 .8 .8}]{hyperref}
+\usepackage{graphicx}
+%\usepackage{tabularx}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{tikz}
+%\usepackage{wrapfig}
+%\usepackage{setspace}
+%\usepackage{caption}
+%\usepackage{fancyhdr}
+\usepackage{nicefrac}
+\usetikzlibrary{arrows,shapes,positioning}
+
+
+\newcommand{\etal}{{\it et~al.}}
+
+\graphicspath{{benchmark/}}
+
+\begin{document}
+
+\title {Second Sound in Liquid Helium II}
+
+\author{Jane Kim}
+\affiliation{Physics 480: Computational Physics}
+\date{\today}
+
+
+\begin{abstract}
+\noindent As normal fluid helium (HeI) is cooled below the lambda point, T$_\lambda=2.17$ K, it undergoes a distinct transition to superfluid helium (HeII) which exhibits some peculiar properties. For instance, heat (or entropy) travels according to a classical wave equation instead of the usual diffusion equation in HeII, resulting in the phenomenon known as second sound. The speed of second sound was determined at $T =$ 1.67, 1.96, 2.09, 2.15, and 2.16 K by measuring the resonance frequencies of a transducer cavity. The results were consistent with data published by R.J. Donnelly (1967).\\
+\end{abstract}
+
+
+
+\maketitle
+
+\section{Introduction}
+
+Superfluidity is a remarkable manifestation of quantum mechanics at the macroscopic level. It was first observed in helium-4, and later in helium-3, after cooling to temperatures near absolute zero. Characterized by apparent frictionless flow\cite{nwe}, superfluids are closely related to Bose-Einstein condensates\cite{phy} and exhibit many strange properties. This paper aims to discuss and measure one of the most peculiar of these properties in superfluid helium-4, the phenomenon of second sound.\\
+
+At atmospheric pressures, ordinary liquid helium (HeI) has a boiling temperature of 4.14 K. As the vapor pressure above the liquid is reduced to about 38 Torr\cite{phy} by a vacuum pump, the normal HeI undergoes a distinct second-order phase transition to superfluid HeII, with a transition temperature of T$_\lambda=2.17$ K (the lambda point). \\
+
+Liquid HeII has strikingly different properties from HeI. For instance, as HeI transitions to HeII at the lambda point, the rapid boiling suddenly ceases due to the sharp increase of the heat capacity of liquid helium. HeII may also have seemingly contradictory measurements of viscosity, depending on the method by which it is measured. When observing capillary flow, HeII appears to have no viscosity at all. But when observing bulk flow, the viscosity is clearly non-zero. Furthermore, the heat conductivity of HeII is notably high, hundreds of times greater than copper. The most interesting property of superfluid HeII involves the phenomenon of second sound. Unlike the usual pressure (or density) wave of first sound, second sound is an heat (or entropy) wave. \cite{stanford}
+
+
+\section{THEORY}
+
+
+The two-fluid model provides a means of explaining some of the strange properties of HeII. This model considers HeII to have two separate components: the normal fluid component and the superfluid component. The former behaves like a typical fluid, while the latter is said to have zero entropy and zero viscosity. Above the lambda point, liquid helium consists entirely of the normal fluid component. But as it is cooled below $T_\lambda$, the superfluid component increases until the liquid helium is completely superfluid at absolute zero.  
+
+
+The corresponding densities of the two components, $\rho_n$ and $\rho_s$, sum to the total density of the liquid $\rho$ and the mass flux $\mathbf{j}$ of the superfluid is given by:
+\begin{equation}
+\mathbf{j}=\rho_n \mathbf{v}_n+\rho_s \mathbf{v}_s,
+\end{equation}
+where $\mathbf{v}_n$ and $\mathbf{v}_s$ are the velocities of the normal and superfluid components, respectively \cite{stanford}. It can be shown that mass, momentum, and entropy conservation produce two different wave equations. The solution to the first equation
+\begin{equation}
+\frac{\partial^2\rho}{\partial t^2} = u_1^2 \nabla^2 \rho,
+\end{equation}
+is a pressure (or density) wave with speed of sound $u_1$. In first sound, the velocities of each component are equal, so the elastic energy of deformation travels as a single wave. Thus the relative densities of the two components remain constant.\\
+
+The solution to the second equation
+\begin{equation}
+\frac{\partial^2S}{\partial t^2} = u_2^2 \nabla^2 S,
+\end{equation}
+is a heat (or entropy) wave with speed of second sound $u_2$. In second sound, we have that $\mathbf{j}=\rho_n \mathbf{v}_n+\rho_s \mathbf{v}_s=0$, so the relative densities of the two components oscillate, while the total density remains constant\cite{stanford}. As $T\rightarrow 0$, $\rho_s$ approaches $\rho$ and $\rho_n$ approaches 0. \\
+
+It should be noted, however, that helium-4  is a boson so the two "components" of the fluid are merely theoretical aids. In other words, this model is inaccurate, but it provides a meaningful framework of understanding the phenomenon of second sound. \\
+
+\section{Experiment}
+
+\subsection{Apparatus}
+The speeds of first and second sound were measured by detecting the various resonance frequencies of a transducer cavity. Identical sets of Nucleopore filters and capacitive transducers were placed on either end of the cylindrical brass cavity, which had length $L=4.0$ cm and radius $r = 0.5$ cm (FIG. 1).\\
+
+\begin{figure}
+\begin{tikzpicture}
+
+\draw (0,-1.8) -- (0,-2.4);
+\draw (0,-2) ellipse (0.6 and 0.2);
+\fill [black!30] (0,-2) ellipse (0.6 and 0.2);
+\draw (0,-1.8) ellipse (0.6 and 0.2);
+\fill [blue!30] (0,-1.8) ellipse (0.6 and 0.2);
+
+\draw (0,0) ellipse (0.6 and 0.2);
+\draw [dotted,thick](0,0) -- (0,-1.8);
+\fill [brown,opacity=0.8] (0,0) ellipse (0.6 and 0.2);
+\draw (-0.6,0) -- (-0.6,-1.6);
+\draw (-0.6,-1.6) arc (180:360:0.6 and 0.2);
+\draw [dashed] (-0.6,-1.6) arc (180:360:0.6 and -0.2);
+\draw (0.6,-1.6) -- (0.6,0);  
+\fill [brown,opacity=0.8] (-0.6,0) -- (-0.6,-1.6) arc (180:360:0.6 and 0.2) -- (0.6,0) arc (0:180:0.6 and -0.2);
+
+\draw (0,0.2) ellipse (0.6 and 0.2);
+\fill [blue!30] (0,0.2) ellipse (0.6 and 0.2);
+\draw (0,0.4) ellipse (0.6 and 0.2);
+\fill [black!30] (0,0.4) ellipse (0.6 and 0.2);
+
+\draw (0,0.8) -- (0,0.4);
+
+\node[anchor=center] at (0,-0.8) {brass cavity};
+\draw[<->] (-0.6,0.4) -- (-1.5,-0.8) -- (-0.6,-2);
+\node[anchor=east] at (-1.5,-0.8) {transducers};
+\draw[<->] (0.6,0.2) -- (1.5,-0.8) -- (0.6,-1.8);
+\node[anchor=west] at (1.5,-0.8) {Nucleopore filters};
+
+\end{tikzpicture}
+\caption{The transducer cavity setup. One transducer produces sound waves by applying an oscillating electric field, which causes the Nucleopore filters to apply a force on the liquid in the cavity. The transducer on the other end detects the sound waves. }
+\end{figure}
+
+The Nucleopore filters are thin polymer membranes with metallized and grounded surfaces. One transducer applies an electric field that oscillates the membranes, producing a sound wave. The pores of the filters are so small that the normal fluid component is blocked. But as mentioned before, the superfluid component has zero viscosity, so it can freely flow through the membranes with no loss in kinetic energy. This replicates the conditions for second sound, since the relative densities of the two components are allowed to oscillate while maintaining constant total density. These sound waves are detected by the transducer on the other end of the cavity.\\
+
+For a standing wave resonance to occur, the length of the cavity must be a half-integer multiple of the wavelength of the driving oscillations\cite{phy}:
+\begin{equation}
+L=\frac{n \lambda}{2}, \ \ \ \ n \in \mathbb{Z}.
+\end{equation}
+
+\noindent By the dispersion relation $u = \lambda f$, we have that the frequency difference between adjacent resonances is given by
+\begin{equation}
+\Delta f = \frac{u}{\lambda_{n+1}} - \frac{u}{\lambda_n} = \frac{u}{2L}( n+1-n )= \frac{u}{2L}.
+\end{equation}
+Thus, we can calculate the speed of first or second sound using
+\begin{equation}
+u = 2L\Delta f.
+\end{equation}
+
+The transducer chamber was placed inside two glass dewars (FIG. 2). To avoid rupturing the thin Nucleopore filters with an extreme drop to liquid helium temperatures ($\sim$ 4 K), the apparatus was first cooled to liquid nitrogen temperatures ($\sim$ 77 K). This was accomplished by filling the experimental chamber with 1 atm of N$_2$ gas and the liquid nitrogen chamber with liquid nitrogen. The outer vacuum chamber was remained sealed, and the inner vacuum chamber was allowed to have a small amount of N$_2$ gas to help facilitate the cooling process. 
+
+\subsection{Electronics}
+
+A full diagram of the experiment is shown in FIG. 2. A waveform generator was used to send a driving signal with some frequency $f$ to the top transducer of the resonant cavity. The sound waves were then detected by the bottom transducer and sent to an SR830 lock-in amplifier. Lock-in amplifiers take accurate measurements of small AC signals that have the same frequency and phase as a reference signal. In this experiment, the reference signal was the driving signal from the waveform generator.\\
+
+The lock-in amplifier decomposes a signal $S(t)$ into a sum of the form
+\begin{equation}
+S(t) = \sum_k A_k \cos(\omega_k t + \phi_k),
+\end{equation}
+where $A_k$ is the amplitude, $\omega_k$ is the frequency, and $\phi_k$ is the phase of the $k$th wave. Then, it multiplies $S(t)$ by the reference signal $R(t)=A_R\cos(\omega_R t)$ such that
+\begin{align*}
+R(t)S(t)&=\sum_k A_R A_k \cos(\omega_R t) \cos(\omega_k t)\\
+&=\frac{1}{2} A_R \sum_k A_k [\cos((\omega_R-\omega_k)t+\phi_k]\\
+& \ \ \ + \cos((\omega_R+\omega_k)t+\phi_k).
+\end{align*}
+The second term in the summation has a high frequency when $\omega_k \approx \omega_R$, so it can be filtered out by a low pass filter. The lock-in amplifier thereby "picks out" signals which have the same frequency and phase as the reference signal. \\
+
+Now, consider the electric field $E$ between the rigid end of the cavity and the metallized surface of the Nucleopore filters. We can model this interaction with a parallel plate capacitor, where the force exerted on the liquid can be shown to be quadratic in $E$\cite{phy}. Since the electric field oscillates with some frequency $\omega_R$, the force on the filter (and hence the reading on bottom transducer) will appear to have a frequency $2\omega_R$. Since the lock-in amplifier would filter this signal out, a large DC bias voltage was applied to the transistors. (By symmetry, both bias voltages were chosen to be 45 V.) Then, we have
+\begin{equation}
+F\propto (E_{DC}+E_{AC})^2 = E_{DC}^2 + 2E_{DC}E_{AC} + E_{AC}^2.
+\end{equation}
+The first term is a constant, the second is linear in $E_{AC}$, and the last is small. Thus, the lock-in amplifier effectively measures signals with the desired frequency. \\
+
+A Cernox resistor, attached to the transducer cavity, was used to monitor the temperature in the experiment chamber. It is only sensitive to temperatures below 40 K, so it was only in use when the experiment chamber was filled with liquid helium. The resistance was measured by a multimeter, and the temperature of the liquid helium was reduced by lowering the vapor pressure above the liquid with a roughing pump. 
+
+\subsection{Procedure}
+
+The apparatus was cooled to liquid nitrogen temperatures for over six hours. At this point, there was 1 atm of N$_2$ gas in the experiment chamber. FIG. 3. shows a full sweep of resonances in the N$_2$ gas during the pre-cooling process. The nitrogen gas was evacuated from the experiment chamber and replaced with 1 atm of helium gas immediately before transferring the liquid helium. In principle, the experiment chamber could have been filled with helium gas at the beginning of the cooling process. But helium can diffuse through glass and conduct heat through the vacuum layers, so we chose to wait on transferring the helium gas until after the pre-cooling procedure.\\
+
+
+Then, the experiment chamber was filled with liquid helium (LHe) by placing the ends of the transfer line into the storage container and the experiment chamber. Pressurizing the storage container with additional helium gas at $\sim 5$ psi allowed the liquid helium to flow into the chamber. Liquid helium has a very low index of refraction, so the liquid level was not easy to dicern. So other signs were used to monitor the liquid level. The start of the flow was signified by the violent boiling of LHe.  The initial boiling will settle momentarily, until the liquid level approaches the top of the experiment chamber. Then the violent boiling returns due to LHe coming in contact with the warmer region of the apparatus. So, the \textit{second} rapid boiling signifies the experiment chamber is full. \\
+
+Once the liquid helium began to flow into the chamber, the apparatus dropped to $\sim$4 K almost immediately. A sweep of 500-5000 Hz in LHe at 4.15 K is shown on the top panel of FIG. 4. Since second sound is not exhibited by liquid helium at temperatures above the lambda point, we expected no resonance peaks. However, small resonance peaks were recorded for frequencies below ~2kHz, about 120 Hz apart. These peaks were attributed to noise from AC electrical signals that operate at 60 Hz. We suspect that odd harmonics of these signals are amplified in the cavity, resulting in frequency differences of 120 Hz. \\
+
+
+Controlling the temperature of the fluid was a matter of balancing the effect of the vacuum pump (to lower the temperature) and adding additional helium gas into the chamber (to raise the temperature). The temperature was lowered to 1.78 K and the driving frequencies were swept from 500 to 5000 Hz. The results are shown in the bottom panel of FIG. 4. The second sound peaks were most prominent for frequencies above 3 kHz, so we swept over frequencies 3 kHz to 4 kHz with a step size of 1 Hz.
+
+
+\section{Results}
+
+Data was collected for five different temperatures below the lambda point and the speed of second sound was calculated using equation (6). The resonance peaks were found manually by searching for local maxima in the lock-in amplitude data. The average frequency difference $\Delta f$ between adjacent resonance peaks and the speed of second sound $u_2$ for each temperature is shown in the table below. The results are shown in FIG. 5. alongside published data from R.J. Donnelly \cite{donnelly.} 
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$T$ (K) & $\delta T$ (K) & $\Delta f$ (Hz) & $\delta(\Delta f)$ (K) & $u_2$ (m/s) & $\delta u_2$ (m/s)\\
+\hline
+\hline
+1.6727&0.0013&251.3&1.414&20.11&11.06\\
+\hline
+1.9602&0.0026&232.5&1.414&18.60&10.23\\
+\hline
+2.0889&0.0034&185.0&1.414&14.80&8.141\\
+\hline
+2.1451&0.0130&110.7&1.414&8.856&4.872\\
+\hline
+2.1624&0.0064&65.50&1.414&5.240&2.884\\
+\hline
+\end{tabular}
+\end{center}
+
+The horizontal error bars ($\delta T$) correspond to the variation in temperature during each sweep. The vertical error bars ($\delta u_2$) were calculated with the following:
+
+\begin{equation}
+u_2 = 2 L \Delta f = 2 L (f_n-f_{n-1})
+\end{equation}
+\begin{equation}
+\frac{\delta u_2}{u_2} = \sqrt{\left( \frac{\delta L }{L} \right)^2 + \left( \frac{\delta (f_n-f_{n-1}) }{\Delta f} \right)^2}\\ \\
+\end{equation}
+
+
+The error in resonance frequency measurements was determined to be the frequency step size of 1 Hz. So, $\delta (f_n-f_{n-1}) = \sqrt{2}$ Hz. $\delta L$ was estimated as the expected change in the length $L$ due to thermal contraction. The thermal expansion coefficient for brass \cite{toolbox} is $\alpha \approx 18.5 \cdot 10^{-6} K^{-1}$ , so
+\begin{equation}
+\begin{aligned}
+\delta L &\approx \Delta L \\
+&= \alpha L \Delta T \\
+&\approx(18.5 \cdot 10^{-6}\  K^{-1})(4.0 \ \text{cm})(300 \ K - 2.17 \ K) \\
+&= 0.022 \  \text{cm}
+\end{aligned}
+\end{equation}
+
+All five data points were consistent with the published data \cite{blah}.
+
+
+\section{Conclusion}
+The speed of second sound was measured in HeII for five different temperatures below $T_\lambda$. They agreed with the published data from R.J. Donnelly within the margins of error. We are certain that the peaks we identified were second sound peaks because they appeared only after cooling the liquid nitrogen below the lambda point (FIG. 4). \\
+
+
+
+
+
+\section{Acknowledgements}
+I would like to thank my lab partner, Antonius Torode, for taking an entire day to correct our crappy data with me. Special thanks to Jaideep Singh and Johannes Pollanen for providing guidance and insight into the sources of error in our initial attempt of this experiment. 
+
+
+
+\newpage
+\begin{references}
+\bibitem{blah} R.J. Donnelly. "Experimental Superfluidity". University of Chicago Press. 1967. 
+\bibitem{toolbox} "Coefficients of Linear Thermal Expansion". The Engineering ToolBox. EngineeringToolBox.com. 
+\bibitem{stanford} Otis Chodosh, Jeremy Hiatt, Samir Shah, and Ning Yan. "Second Sound in HeII". Department of Physics, Stanford University. March 21, 2008.
+\bibitem{phy} "Second Sound in Superfluid Liquid He". Department of Physics and Astronomy, Michigan State University. PHY 451.
+\bibitem{nwe} "Superfluidity". New World Encyclopedia. October 28, 2015. 
+\end{references}
+
+\end{document}

@@ -1,12 +1,8 @@
-// g++ -std=c++11 harmonic_oscillator.cpp jacobi.cpp -o HO -larmadillo
-
 #include "jacobi.h"
-
-const double hbar = 1.0545718E-34; // Js
 
 void check_eigenvalues(mat& H, int N, double a, double d){
 
-	vec eigvals(n);
+	vec eigvals(N);
 	double lambda;
 
 	for(int i = 0; i < N; i++){
@@ -40,7 +36,7 @@ void print_to_file(mat& D, mat& U, vec& rho, int N, string filename){
 	vec eigvals(N);
 	ivec index(3);
 
-	// sort eigenvectors by ascending order
+	// sort eigenvalues by ascending order
 	for(int i = 0; i < N; i++){
 		eigvals(i) = D(i,i);
 	}
@@ -77,7 +73,6 @@ void print_to_file(mat& D, mat& U, vec& rho, int N, string filename){
 int main(int argc, char *argv[]){
 
 	int N, k, l;
-	double m, w;
 
 	if(argc < 1){ cout << "Input number of mesh points N." << endl; }
 	else{ 
@@ -105,16 +100,6 @@ int main(int argc, char *argv[]){
 	}
 	H(N-1,N-1) = d+V(N-1);	
 
-	
-	// ARMA TEST
-	vec eigvals(N);
-	eig_sym(eigvals,H);
-
-	for(int i = 0; i < N; i++){
-		cout << setw(15) << setprecision(8) << eigvals(i) << endl;
-	}
-	
-
 	// set-up matrix of eigenvectors
 	mat U = eye<mat>(N,N);
 
@@ -140,12 +125,12 @@ int main(int argc, char *argv[]){
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
 
-	check_eigenvalues(H,N,a,d);
+	//check_eigenvalues(H,N,a,d);
 
 	//cout << "* EIGENVECTORS *" << endl;
-	//print_matrix(U,n);
+	//print_matrix(U,N);
 
-	//print_to_file(H, U, rho, n, "oscillator");
+	print_to_file(H, U, rho, N, "oscillator");
 
 	return 0;
 }
