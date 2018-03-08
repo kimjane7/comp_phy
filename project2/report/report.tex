@@ -21,6 +21,30 @@
 \newenvironment{psmallmatrix}
   {\left[\begin{matrix}}
   {\end{matrix}\right]}
+  
+ \usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 
 \newcommand{\etal}{{\it et~al.}}
@@ -79,7 +103,7 @@ u_i &= u(\rho_i),\\
 \rho_i &= ih,\\
 \end{split}
 \end{align}
-where $d = 2/h^2$, $a = -1/h^2$, $h = 1/N$ is the step size. At the endpoints, $u_0 = u_N = 0$. This Toeplitz matrix has analytic eigenvalues
+where $d = 2/h^2$, $a = -1/h^2$, and $h = 1/N$ is the step size. At the endpoints, $u_0 = u_N = 0$. This Toeplitz matrix has analytic eigenvalues
 \begin{equation}
 \lambda_i = d+2a\cos \left( \frac{i \pi}{N+1} \right) , \ \ \ i = 1, 2, ..., N-1,
 \end{equation}
@@ -125,127 +149,134 @@ As with one electron case, we substitute the dimensionless variable $\rho=r/\alp
 \begin{equation}
 \left( -\frac{d^2}{d\rho^2} + \omega_r^2\rho^2 + \frac{1}{\rho}\right) \psi(\rho) = \lambda\psi(\rho).
 \end{equation}
-Here, we have defined $\alpha=\hbar^2/m\beta e^2$ and $\lambda = $ 
-$m\alpha^2E/\hbar^2$. Thus the two electron case simply adds another term $\rho_i$ to the diagonal elements of $A$ from the one electron case. 
+Here, we have fixed $\alpha=\hbar^2/m\beta e^2$ and defined $\lambda = $ 
+$m\alpha^2E/\hbar^2$. Thus the two electron case simply adds another term $1/\rho_i$ to the diagonal elements of $A$ from the one electron case. 
 
 \section{METHOD}
 
-
-The two-fluid model provides a means of explaining some of the strange properties of HeII. This model considers HeII to have two separate components: the normal fluid component and the superfluid component. The former behaves like a typical fluid, while the latter is said to have zero entropy and zero viscosity. Above the lambda point, liquid helium consists entirely of the normal fluid component. But as it is cooled below $T_\lambda$, the superfluid component increases until the liquid helium is completely superfluid at absolute zero.  
-
-
-The corresponding densities of the two components, $\rho_n$ and $\rho_s$, sum to the total density of the liquid $\rho$ and the mass flux $\mathbf{j}$ of the superfluid is given by:
+Jacobi's rotation algorithm is an iterative method for approximating the eigenvalues and eigenvectors of a real, symmetric, $N\times N$ matrix. Say we have such a matrix  $A$, and it has a non-zero element $a_{k\ell}$ for some $k, \ell = 1,2,...,N$ and $k\neq \ell$. Let $J(k,l,\theta)$ be a rotation matrix of the form
 \begin{equation}
-\mathbf{j}=\rho_n \mathbf{v}_n+\rho_s \mathbf{v}_s,
+J(k,l,\theta) = \begin{psmallmatrix}
+&1&\cdots &0 &\cdots &0 &\cdots &0\\
+&\vdots& &\vdots & &\vdots & &\vdots\\
+&0&\cdots &c &\cdots &s &\cdots &0\\
+&\vdots& &\vdots & &\vdots & &\vdots\\
+&0&\cdots &-s &\cdots &c &\cdots &0\\
+&\vdots& &\vdots & &\vdots & &\vdots\\
+&0&\cdots &0 &\cdots &0 &\cdots &1\\
+\end{psmallmatrix},
 \end{equation}
-where $\mathbf{v}_n$ and $\mathbf{v}_s$ are the velocities of the normal and superfluid components, respectively \cite{stanford}. It can be shown that mass, momentum, and entropy conservation produce two different wave equations. The solution to the first equation
+where $J_{kk}=J_{\ell\ell}=\cos\theta=c$ and $J_{k\ell}=-J_{\ell k}=\sin\theta=s$. This matrix is orthogonal, so for some arbitrary angle $\theta$, conjugation of $A$ by $J(k,\ell,\theta)$ is given by
 \begin{equation}
-\frac{\partial^2\rho}{\partial t^2} = u_1^2 \nabla^2 \rho,
+A'=J(k,\ell,\theta)^T A J(k,\ell,\theta),
 \end{equation}
-is a pressure (or density) wave with speed of sound $u_1$. In first sound, the velocities of each component are equal, so the elastic energy of deformation travels as a single wave. Thus the relative densities of the two components remain constant.\\
+where $A'$ has the entries 
+\begin{align}
+a_{kk}'&=c^2a_{kk}+s^2a_{\ell\ell}-2csa_{k\ell}\\
+a_{\ell\ell}'&=s^2a_{kk}+c^2a_{\ell\ell}+2csa_{k\ell}\\
+a_{ik}'&=a_{ki}'=ca_{ik}-sa_{i\ell}, \ \ \ i\neq k, i \neq \ell\\
+a_{il}'&=a_{li}'=ca_{i\ell}+sa_{ik}, \ \ \ i\neq k, i \neq \ell\\
+a_{k\ell}'&=a_{\ell k}'=(c^2-s^2)a_{k\ell}+sc(a_{kk}-a_{\ell\ell})
+\end{align}
+We can calculate the special angle $\theta$ for which the elements $a_{k\ell}'$ and $a_{\ell k}'$ become zero using equation (18). In this way, Jacobi's algorithm diagonalizes the matrix $A$ by repeatedly applying similarity transformations of the form (13) to "zero out" the off-diagonal elements $a_{k\ell}$. The largest off-diagonal element is chosen to increase efficiency. The eigenvalues of $A$ are the diagonal elements of the resulting matrix.\\
 
-The solution to the second equation
+To calculate $\theta$, we set (18) equal to zero to obtain
 \begin{equation}
-\frac{\partial^2S}{\partial t^2} = u_2^2 \nabla^2 S,
+\frac{a_{\ell\ell}-a_{kk}}{a_{k\ell}} = \frac{c^2-s^2}{cs} = \frac{c}{s}-\frac{s}{c} = \frac{1}{t}-t,
 \end{equation}
-is a heat (or entropy) wave with speed of second sound $u_2$. In second sound, we have that $\mathbf{j}=\rho_n \mathbf{v}_n+\rho_s \mathbf{v}_s=0$, so the relative densities of the two components oscillate, while the total density remains constant\cite{stanford}. As $T\rightarrow 0$, $\rho_s$ approaches $\rho$ and $\rho_n$ approaches 0. \\
-
-It should be noted, however, that helium-4  is a boson so the two "components" of the fluid are merely theoretical aids. In other words, this model is inaccurate, but it provides a meaningful framework of understanding the phenomenon of second sound. \\
-
-\section{Experiment}
-
-\subsection{Apparatus}
-The speeds of first and second sound were measured by detecting the various resonance frequencies of a transducer cavity. Identical sets of Nucleopore filters and capacitive transducers were placed on either end of the cylindrical brass cavity, which had length $L=4.0$ cm and radius $r = 0.5$ cm (FIG. 1).\\
-
-\begin{figure}
-\begin{tikzpicture}
-
-\draw (0,-1.8) -- (0,-2.4);
-\draw (0,-2) ellipse (0.6 and 0.2);
-\fill [black!30] (0,-2) ellipse (0.6 and 0.2);
-\draw (0,-1.8) ellipse (0.6 and 0.2);
-\fill [blue!30] (0,-1.8) ellipse (0.6 and 0.2);
-
-\draw (0,0) ellipse (0.6 and 0.2);
-\draw [dotted,thick](0,0) -- (0,-1.8);
-\fill [brown,opacity=0.8] (0,0) ellipse (0.6 and 0.2);
-\draw (-0.6,0) -- (-0.6,-1.6);
-\draw (-0.6,-1.6) arc (180:360:0.6 and 0.2);
-\draw [dashed] (-0.6,-1.6) arc (180:360:0.6 and -0.2);
-\draw (0.6,-1.6) -- (0.6,0);  
-\fill [brown,opacity=0.8] (-0.6,0) -- (-0.6,-1.6) arc (180:360:0.6 and 0.2) -- (0.6,0) arc (0:180:0.6 and -0.2);
-
-\draw (0,0.2) ellipse (0.6 and 0.2);
-\fill [blue!30] (0,0.2) ellipse (0.6 and 0.2);
-\draw (0,0.4) ellipse (0.6 and 0.2);
-\fill [black!30] (0,0.4) ellipse (0.6 and 0.2);
-
-\draw (0,0.8) -- (0,0.4);
-
-\node[anchor=center] at (0,-0.8) {brass cavity};
-\draw[<->] (-0.6,0.4) -- (-1.5,-0.8) -- (-0.6,-2);
-\node[anchor=east] at (-1.5,-0.8) {transducers};
-\draw[<->] (0.6,0.2) -- (1.5,-0.8) -- (0.6,-1.8);
-\node[anchor=west] at (1.5,-0.8) {Nucleopore filters};
-
-\end{tikzpicture}
-\caption{The transducer cavity setup. One transducer produces sound waves by applying an oscillating electric field, which causes the Nucleopore filters to apply a force on the liquid in the cavity. The transducer on the other end detects the sound waves. }
-\end{figure}
-
-The Nucleopore filters are thin polymer membranes with metallized and grounded surfaces. One transducer applies an electric field that oscillates the membranes, producing a sound wave. The pores of the filters are so small that the normal fluid component is blocked. But as mentioned before, the superfluid component has zero viscosity, so it can freely flow through the membranes with no loss in kinetic energy. This replicates the conditions for second sound, since the relative densities of the two components are allowed to oscillate while maintaining constant total density. These sound waves are detected by the transducer on the other end of the cavity.\\
-
-For a standing wave resonance to occur, the length of the cavity must be a half-integer multiple of the wavelength of the driving oscillations\cite{phy}:
+where $\tan\theta=t=s/c$. We define $\tau = (a_{\ell\ell}-a_{kk})/2a_{kl}$ so that (19) can be rewritten as the quadratic equation
 \begin{equation}
-L=\frac{n \lambda}{2}, \ \ \ \ n \in \mathbb{Z}.
+t^2+2\tau t - 1 = 0,
 \end{equation}
-
-\noindent By the dispersion relation $u = \lambda f$, we have that the frequency difference between adjacent resonances is given by
+which has the analytic solutions $t=-\tau\pm \sqrt{1+\tau^2}$. Once $t$ is known, $c$ and $s$ are calculated using 
 \begin{equation}
-\Delta f = \frac{u}{\lambda_{n+1}} - \frac{u}{\lambda_n} = \frac{u}{2L}( n+1-n )= \frac{u}{2L}.
+c = \frac{1}{\sqrt{1+t^2}}, \ \ \  s=tc.
 \end{equation}
-Thus, we can calculate the speed of first or second sound using
+In addition, the products $c^2, s^2$, and $cs$ are precalculated before applying equations (14) and (15).\\
+
+Suppose the matrix $A$ is (nearly) diagonal after $n$ rotations, i.e. 
 \begin{equation}
-u = 2L\Delta f.
+D=J_n^T \cdots J_2^T J_1^T A J_1 J_2 \cdots J_n
 \end{equation}
+for some rotation matrices $J_i$ and diagonal matrix $D$. Then the eigenvectors are simply given by the columns of the product $J_1J_2\cdots J_n$.
 
-The transducer chamber was placed inside two glass dewars (FIG. 2). To avoid rupturing the thin Nucleopore filters with an extreme drop to liquid helium temperatures ($\sim$ 4 K), the apparatus was first cooled to liquid nitrogen temperatures ($\sim$ 77 K). This was accomplished by filling the experimental chamber with 1 atm of N$_2$ gas and the liquid nitrogen chamber with liquid nitrogen. The outer vacuum chamber was remained sealed, and the inner vacuum chamber was allowed to have a small amount of N$_2$ gas to help facilitate the cooling process. 
+\section{Implementation}
 
-\subsection{Electronics}
+\subsection{Jacobi's Algorithm}
 
-A full diagram of the experiment is shown in FIG. 2. A waveform generator was used to send a driving signal with some frequency $f$ to the top transducer of the resonant cavity. The sound waves were then detected by the bottom transducer and sent to an SR830 lock-in amplifier. Lock-in amplifiers take accurate measurements of small AC signals that have the same frequency and phase as a reference signal. In this experiment, the reference signal was the driving signal from the waveform generator.\\
+The bulk of Jacobi's algorithm can be broken down into two parts: the search for the largest off-diagonal element $a_{k\ell}$, called a pivot, followed by the corresponding rotation of the form (13). Accordingly, we developed a function called \texttt{get\_pivot} which stores the indices $k,\ell$ of the largest element of $A$ above the diagonal (since $A$ is symmetric).
 
-The lock-in amplifier decomposes a signal $S(t)$ into a sum of the form
-\begin{equation}
-S(t) = \sum_k A_k \cos(\omega_k t + \phi_k),
-\end{equation}
-where $A_k$ is the amplitude, $\omega_k$ is the frequency, and $\phi_k$ is the phase of the $k$th wave. Then, it multiplies $S(t)$ by the reference signal $R(t)=A_R\cos(\omega_R t)$ such that
-\begin{align*}
-R(t)S(t)&=\sum_k A_R A_k \cos(\omega_R t) \cos(\omega_k t)\\
-&=\frac{1}{2} A_R \sum_k A_k [\cos((\omega_R-\omega_k)t+\phi_k]\\
-& \ \ \ + \cos((\omega_R+\omega_k)t+\phi_k).
-\end{align*}
-The second term in the summation has a high frequency when $\omega_k \approx \omega_R$, so it can be filtered out by a low pass filter. The lock-in amplifier thereby "picks out" signals which have the same frequency and phase as the reference signal. \\
+\begin{lstlisting}
+// jacobi.cpp
+void get_pivot(mat& A, int N, int& k, int& l){
+	double Aij,max_offdiag = 0.0;
+	for(int i = 0; i < N-1; i++){
+		for(int j = i+1; j < N; j++){
+			Aij = fabs(A(i,j));
+			if(Aij > max_offdiag){
+				max_offdiag = Aij;
+				k = i;
+				l = j;
+			}
+		}
+	}
+}
+\end{lstlisting}
 
-Now, consider the electric field $E$ between the rigid end of the cavity and the metallized surface of the Nucleopore filters. We can model this interaction with a parallel plate capacitor, where the force exerted on the liquid can be shown to be quadratic in $E$\cite{phy}. Since the electric field oscillates with some frequency $\omega_R$, the force on the filter (and hence the reading on bottom transducer) will appear to have a frequency $2\omega_R$. Since the lock-in amplifier would filter this signal out, a large DC bias voltage was applied to the transistors. (By symmetry, both bias voltages were chosen to be 45 V.) Then, we have
-\begin{equation}
-F\propto (E_{DC}+E_{AC})^2 = E_{DC}^2 + 2E_{DC}E_{AC} + E_{AC}^2.
-\end{equation}
-The first term is a constant, the second is linear in $E_{AC}$, and the last is small. Thus, the lock-in amplifier effectively measures signals with the desired frequency. \\
+\noindent Meanwhile, another function called \texttt{rotate} carries out the transformation $A'=J(k,\ell,\theta)^TAJ(k,\ell,\theta)$ and right-multiplies a matrix $V$ by $J(k,\ell,\theta)$. $V$ is initialized as the identity matrix before the first rotation so that the columns of the resulting matrix are the eigenvectors of $A$. 
 
-A Cernox resistor, attached to the transducer cavity, was used to monitor the temperature in the experiment chamber. It is only sensitive to temperatures below 40 K, so it was only in use when the experiment chamber was filled with liquid helium. The resistance was measured by a multimeter, and the temperature of the liquid helium was reduced by lowering the vapor pressure above the liquid with a roughing pump. 
+\begin{lstlisting}
+// jacobi.cpp
+void rotate(mat& A, mat& V, int k, int l, int N){
 
-\subsection{Procedure}
+	// zero out A(k,l)=A(l,k)
+	if( A(k,l) != 0.0 ){
 
-The apparatus was cooled to liquid nitrogen temperatures for over six hours. At this point, there was 1 atm of N$_2$ gas in the experiment chamber. FIG. 3. shows a full sweep of resonances in the N$_2$ gas during the pre-cooling process. The nitrogen gas was evacuated from the experiment chamber and replaced with 1 atm of helium gas immediately before transferring the liquid helium. In principle, the experiment chamber could have been filled with helium gas at the beginning of the cooling process. But helium can diffuse through glass and conduct heat through the vacuum layers, so we chose to wait on transferring the helium gas until after the pre-cooling procedure.\\
+		double c, s, t, tau;
+		double cc, ss, cs;
+		double Aik, Ail, Vik, Vil;
+		double Akk = A(k,k), All = A(l,l), Akl = A(k,l);
 
+		// calculate angle of rotation
+		tau = 0.5*(All-Akk)/Akl;
+		if(tau >= 0.0){ t = -tau+sqrt(1.0+tau*tau); }
+		else{ t = -tau-sqrt(1.0+tau*tau); }
 
-Then, the experiment chamber was filled with liquid helium (LHe) by placing the ends of the transfer line into the storage container and the experiment chamber. Pressurizing the storage container with additional helium gas at $\sim 5$ psi allowed the liquid helium to flow into the chamber. Liquid helium has a very low index of refraction, so the liquid level was not easy to dicern. So other signs were used to monitor the liquid level. The start of the flow was signified by the violent boiling of LHe.  The initial boiling will settle momentarily, until the liquid level approaches the top of the experiment chamber. Then the violent boiling returns due to LHe coming in contact with the warmer region of the apparatus. So, the \textit{second} rapid boiling signifies the experiment chamber is full. \\
+		cc = 1.0/(1.0+t*t);
+		ss = 1.0-cc;
+		cs = t*cc;
+		c = sqrt(cc);
+		s = t*c;
 
-Once the liquid helium began to flow into the chamber, the apparatus dropped to $\sim$4 K almost immediately. A sweep of 500-5000 Hz in LHe at 4.15 K is shown on the top panel of FIG. 4. Since second sound is not exhibited by liquid helium at temperatures above the lambda point, we expected no resonance peaks. However, small resonance peaks were recorded for frequencies below ~2kHz, about 120 Hz apart. These peaks were attributed to noise from AC electrical signals that operate at 60 Hz. We suspect that odd harmonics of these signals are amplified in the cavity, resulting in frequency differences of 120 Hz. \\
+		// perform rotation
+		A(k,l) = 0.0;
+		A(l,k) = 0.0;
+		A(k,k) = cc*Akk+ss*All-2.0*cs*Akl;
+		A(l,l) = ss*Akk+cc*All+2.0*cs*Akl;
+		for(int i = 0; i < N; i++){
 
+			if( (i!=k) && (i!=l) ){
+				Aik = A(i,k);
+				Ail = A(i,l);
+				A(i,k) = c*Aik-s*Ail;
+				A(i,l) = c*Ail+s*Aik;
+				A(k,i) = A(i,k);
+				A(l,i) = A(i,l);
+			}
 
-Controlling the temperature of the fluid was a matter of balancing the effect of the vacuum pump (to lower the temperature) and adding additional helium gas into the chamber (to raise the temperature). The temperature was lowered to 1.78 K and the driving frequencies were swept from 500 to 5000 Hz. The results are shown in the bottom panel of FIG. 4. The second sound peaks were most prominent for frequencies above 3 kHz, so we swept over frequencies 3 kHz to 4 kHz with a step size of 1 Hz.
+			// rotate eigenvectors 
+			Vik = V(i,k);
+			Vil = V(i,l);
+			V(i,k) = c*Vik-s*Vil;
+			V(i,l) = s*Vik+c*Vil;
+		}
+	}
 
+	else{ cout << "ERROR: These elements are already zero!" << endl; } 
+}
+\end{lstlisting}
+
+\noindent A is considered diagonalized after applying \texttt{get\_pivot} and \texttt{rotate} until the sum of squares of the off-diagonal elements is smaller than some number $\epsilon$. 
 
 \section{Results}
 

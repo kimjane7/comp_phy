@@ -1,47 +1,5 @@
 #include "jacobi.h"
 
-void print_to_file(mat& D, mat& U, vec& rho, int N, string filename){
-
-
-	ofstream ofile;
-	double lambda, u, uu;
-	vec eigvals(N);
-	ivec index(3);
-
-	// sort eigenvalues by ascending order
-	for(int i = 0; i < N; i++){
-		eigvals(i) = D(i,i);
-	}
-	sort(eigvals.begin(),eigvals.end());
-
-	// get indices of lowest 3 eigenvalues
-	for(int i = 0; i < 3; i++){
-		for(int j = 0; j < N; j++){
-			if(eigvals(i) == D(j,j)) index(i) = j;
-		}
-	}
-
-	// print u(rho) for lowest three eigenvalues
-	for(int j = 0; j < 3; j++){
-
-		string outfile = filename + to_string(j+1) + ".dat";
-		lambda = 3.0+j*4.0;
-
-		ofile.open(outfile);
-		ofile << "# calculated eigenvalue = " << eigvals(j) << endl;
-		ofile << "# exact eigenvalue = " << lambda << endl;
-		ofile << "# rho = r/alpha, eigenvector = u(rho)" << endl;
-
-		for(int i = 0; i < N; i++){
-			u = U(i,index(j));
-			uu = u*u;
-			ofile << rho(i) << "\t" << u << "\t" << uu << endl;
-		}
-		ofile.close();
-	}
-}
-
-
 int main(int argc, char *argv[]){
 
 	int N, k, l;
@@ -59,7 +17,7 @@ int main(int argc, char *argv[]){
 	// set up rho and potential
 	vec rho(N), V(N);
 	for(int i = 0; i < N; i++){
-		rho(i) = rhomin + (i+1.0)*h;
+		rho(i) = rhomin + i*h;
 		V(i) = rho(i)*rho(i);
 	}
 
@@ -97,7 +55,7 @@ int main(int argc, char *argv[]){
 
 	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
 
-	print_to_file(H, U, rho, N, "oscillator");
+	write_n_eigs(H, U, rho, N, 3, "oscillator");
 
 	return 0;
 }
