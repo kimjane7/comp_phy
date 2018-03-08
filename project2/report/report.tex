@@ -276,7 +276,11 @@ void rotate(mat& A, mat& V, int k, int l, int N){
 }
 \end{lstlisting}
 
-\noindent A is considered diagonalized after applying \texttt{get\_pivot} and \texttt{rotate} until the sum of squares of the off-diagonal elements is smaller than some number $\epsilon$. 
+\noindent A is considered diagonalized after applying \texttt{get\_pivot} and \texttt{rotate} until the sum of squares of the off-diagonal elements is smaller than some fixed number $\epsilon$. 
+
+\subsection{Unit Tests}
+
+The 
 
 \section{Results}
 

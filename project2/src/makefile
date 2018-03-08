@@ -27,4 +27,5 @@ jacobi.o: jacobi.cpp
 	${CC} ${CFLAGS} -c jacobi.cpp
 
 clean: 
-	rm toeplitz harmonic quantum testcode *.o *.dat
+	rm toeplitz harmonic quantum testcode *.o *.dat 
+	rm ../report/report.aux ../report/report.log ../report/report.out ../report/report.synctex.gz ../report/reportNotes.bib

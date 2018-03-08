@@ -101,7 +101,7 @@ void print_matrix(mat& A, int N){
 
 	for(int i = 0; i < N; i++){
 		cout << "[";
-		for(int j = 0; j < n; j++){
+		for(int j = 0; j < N; j++){
 			cout << setw(10) << setprecision(3) << A(i,j);
 		}
 		cout << "]" << endl;
