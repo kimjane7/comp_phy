@@ -1,5 +1,52 @@
 #include "jacobi.h"
 
+// print eigenvectors corresponding to lowest n eigenvalues
+void write_n_eigs(mat& D, mat& U, vec& rho, int N, int n, string filename){
+
+
+	ofstream ofile;
+	double lambda, u, uu;
+	vec eigvals(N);
+	ivec index(n);
+
+	// sort eigenvalues by ascending order
+	for(int i = 0; i < N; i++){
+		eigvals(i) = D(i,i);
+	}
+	sort(eigvals.begin(),eigvals.end());
+
+	// get indices of lowest 3 eigenvalues
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < N; j++){
+			if(eigvals(i) == D(j,j)) index(i) = j;
+		}
+	}
+
+	// print u(rho) for lowest three eigenvalues
+	for(int j = 0; j < n; j++){
+
+		lambda = 3.0+j*4.0;
+
+		string outfile = filename + to_string(j+1) + ".dat";
+		cout << "Writing to '" << outfile << "'... ";
+
+		ofile.open(outfile);
+		ofile << "# N = " << N << endl;
+		ofile << "# calculated eigenvalue = " << eigvals(j) << endl;
+		ofile << "# exact eigenvalue = " << lambda << endl;
+		ofile << "# rho = r/alpha, eigenvector = u(rho)" << endl;
+
+		for(int i = 0; i < N; i++){
+			u = U(i,index(j));
+			uu = u*u;
+			ofile << rho(i) << "\t" << u << "\t" << uu << endl;
+		}
+		ofile.close();
+		
+		cout << "done!" << endl;
+	}
+}
+
 int main(int argc, char *argv[]){
 
 	int N, k, l;

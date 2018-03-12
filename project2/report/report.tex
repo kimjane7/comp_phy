@@ -276,7 +276,7 @@ void rotate(mat& A, mat& V, int k, int l, int N){
 }
 \end{lstlisting}
 
-\noindent $A$ is considered diagonalized after applying \texttt{get\_pivot} and \texttt{rotate} until the sum of squares of the off-diagonal elements is smaller than some fixed number $\epsilon$. This sum is calculated by a function called \texttt{offdiag\_sq}, which uses fact that $A$ is symmetric to reduce the number of floating point operations by a factor of two. Finally, for ease and readability, these functions 
+\noindent $A$ is considered diagonalized after applying \texttt{get\_pivot} and \texttt{rotate} until the sum of squares of the off-diagonal elements is smaller than some fixed number $\epsilon$. This sum is calculated by a function called \texttt{offdiag\_sq}, which uses fact that $A$ is symmetric to reduce the number of floating point operations by a factor of two. Finally, for ease and readability, Jacobi's algorithm is implemented by calling these three functionsd \texttt{jacobi}
 
 \begin{lstlisting}
 // jacobi.cpp 
@@ -306,22 +306,11 @@ Similarity transformations with orthogonal matrices preserve the Frobenius norm,
 Data was collected for five different temperatures below the lambda point and the speed of second sound was calculated using equation (6). The resonance peaks were found manually by searching for local maxima in the lock-in amplitude data. The average frequency difference $\Delta f$ between adjacent resonance peaks and the speed of second sound $u_2$ for each temperature is shown in the table below. The results are shown in FIG. 5. alongside published data from R.J. Donnelly \cite{donnelly.} 
 
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-$T$ (K) & $\delta T$ (K) & $\Delta f$ (Hz) & $\delta(\Delta f)$ (K) & $u_2$ (m/s) & $\delta u_2$ (m/s)\\
-\hline
-\hline
-1.6727&0.0013&251.3&1.414&20.11&11.06\\
-\hline
-1.9602&0.0026&232.5&1.414&18.60&10.23\\
-\hline
-2.0889&0.0034&185.0&1.414&14.80&8.141\\
-\hline
-2.1451&0.0130&110.7&1.414&8.856&4.872\\
-\hline
-2.1624&0.0064&65.50&1.414&5.240&2.884\\
-\hline
-\end{tabular}
+\begin{figure*}
+\includegraphics[scale=0.7]{wvfunc_1e.pdf}
+
+\textit{Figure 1.} The approximate wavefunctions of the lowest three energy states for one electron in a three-dimensional harmonic oscillator potential are plotted above. Here, $\rho$ is the dimensionless variable defined in Section I. B. 
+\end{figure*}
 \end{center}
 
 The horizontal error bars ($\delta T$) correspond to the variation in temperature during each sweep. The vertical error bars ($\delta u_2$) were calculated with the following:

@@ -15,7 +15,7 @@ colors = ['skyblue', 'mediumseagreen', 'darksalmon']
 plt.figure(figsize=(10,8))
 fig = plt.figure(1)
 axes = plt.gca()
-axes.set_xlim([0,5])
+axes.set_xlim([-0.01,5])
 axes.tick_params(labelsize=14)
 
 for i in range(0,3):

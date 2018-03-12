@@ -1,5 +1,67 @@
 #include "jacobi.h"
 
+// returns nth largest eigenvalue of diagonalized matrix
+double get_nth_eigenvalue(mat& D, int N, int n){
+
+	vec eigvals(N);
+
+	for(int i = 0; i < N; i++){
+		eigvals(i) = D(i,i);
+	}
+	sort(eigvals.begin(),eigvals.end());
+
+	return eigvals(n);
+}
+
+// returns index of nth largest eigenvalue
+int get_nth_index(mat& D, int N, int n){
+
+	int index;
+	vec eigvals(N);
+
+	for(int i = 0; i < N; i++){
+		eigvals(i) = D(i,i);
+	}
+	sort(eigvals.begin(),eigvals.end());
+
+	for(int i = 0; i < N; i++){
+		if(eigvals(n) == D(i,i)) index = i;
+	}
+
+	return index;
+}
+
+void write_ground_state(mat& H, mat& H0, mat& U, mat& U0, vec& rho, int N, double omega, string filename){
+
+	double u, u0;
+
+	cout << "Writing to '" << filename << "'... ";
+
+	ofstream ofile;
+	ofile.open(filename);
+
+	ofile << "# N = " << N << endl;
+	ofile << "# omega_r = " << omega << endl;
+	ofile << "# computation time = " << time << endl;
+	ofile << "# first eigenvalue [Coulomb] = " << get_nth_eigenvalue(H, N, 0) << endl;
+	ofile << "# first eigenvalue [no Coulomb] = " << get_nth_eigenvalue(H0, N, 0) << endl;
+	ofile << "# rho, |u(rho)|^2 [Coulomb], |u0(rho)|^2 [no Coulomb]" << endl;
+	
+	int j = get_nth_index(H,N,0);
+	int j0 = get_nth_index(H0,N,0);
+	for(int i = 0; i < N; i++){
+		u = U(i,j);
+		u0 = U0(i,j0);
+		ofile << setw(15) << setprecision(8) << rho(i);
+		ofile << setw(15) << setprecision(8) << u*u;
+		ofile << setw(15) << setprecision(8) << u0*u0 << endl;
+	}
+
+	ofile.close();
+
+	cout << "done!" << endl;
+}
+
 int main(int argc, char *argv[]){
 
 	int N, k, l;
