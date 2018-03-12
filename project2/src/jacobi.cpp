@@ -97,6 +97,24 @@ void rotate(mat& A, mat& V, int k, int l, int N){
 	else{ cout << "ERROR: These elements are already zero!" << endl; } 
 }
 
+void jacobi(mat& A, mat& V, int N){
+
+	double epsilon = 1E-8;
+	int k, l, iterations = 0;
+
+	while(offdiag_sq(A,N) > epsilon){
+
+		get_pivot(A, N, k, l);
+
+		rotate(A, V, k, l, N);
+
+		iterations += 1;
+	}
+
+	cout << "Diagonalized in " << iterations << " iterations" << endl;
+
+}
+
 void print_matrix(mat& A, int N){
 
 	for(int i = 0; i < N; i++){
@@ -165,8 +183,10 @@ void write_n_eigs(mat& D, mat& U, vec& rho, int N, int n, string filename){
 	// print u(rho) for lowest three eigenvalues
 	for(int j = 0; j < n; j++){
 
-		string outfile = filename + to_string(j+1) + ".dat";
 		lambda = 3.0+j*4.0;
+
+		string outfile = filename + to_string(j+1) + ".dat";
+		cout << "Writing to '" << outfile << "'... ";
 
 		ofile.open(outfile);
 		ofile << "# calculated eigenvalue = " << eigvals(j) << endl;
@@ -179,6 +199,8 @@ void write_n_eigs(mat& D, mat& U, vec& rho, int N, int n, string filename){
 			ofile << rho(i) << "\t" << u << "\t" << uu << endl;
 		}
 		ofile.close();
+		
+		cout << "done!" << endl;
 	}
 }
 
@@ -186,7 +208,7 @@ void write_ground_state(mat& H, mat& H0, mat& U, mat& U0, vec& rho, int N, doubl
 
 	double u, u0;
 
-	cout << "writing to file ---> " << filename << endl;
+	cout << "Writing to '" << filename << "'... ";
 
 	ofstream ofile;
 	ofile.open(filename);
@@ -210,5 +232,5 @@ void write_ground_state(mat& H, mat& H0, mat& U, mat& U0, vec& rho, int N, doubl
 
 	ofile.close();
 
-	cout << "done!\n" << endl;
+	cout << "done!" << endl;
 }

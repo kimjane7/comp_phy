@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 	double rhomin = 0.0, rhomax = 10.0;
 	double h = (rhomax-rhomin)/(N+1), hh = h*h;
 	double d = 2.0/hh, a = -1.0/hh;
-	double epsilon = 1E-8, time;
+	double time;
 
 	// set up rho and potential
 	vec rho(N), V(N);
@@ -38,22 +38,12 @@ int main(int argc, char *argv[]){
 	initial = clock();
 
 	// solve for eigenvalues and eigenvectors
-	int iterations = 0;
-	while(offdiag_sq(H,N) > epsilon){
-
-		get_pivot(H, N, k, l);
-
-		rotate(H, U, k, l, N);
-
-		iterations += 1;
-	}
+	jacobi(H, U, N);
 
 	// end timer
 	final = clock();
 	time = (final-initial)/((double) CLOCKS_PER_SEC);
-	cout << "\nComputation Time = " << time << " s\n";
-
-	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
+	cout << "Computation Time = " << time << " s\n";
 
 	write_n_eigs(H, U, rho, N, 3, "oscillator");
 

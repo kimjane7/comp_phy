@@ -4,15 +4,9 @@
 TEST_CASE("TEST: Frobenius norm"){
 
 	int N = 3, k, l;
-
-	mat A = zeros<mat>(N,N);
-	for(int i = 0; i < N-1; i++){
-		A(i,i) = 2.0;
-		A(i+1,i) = -1.0;
-		A(i,i+1) = -1.0;
-	}
-	A(N-1,N-1) = 2.0;
-
+	
+	mat R = randu<mat>(N,N);
+	mat A = R.t()*R;
 	mat U = eye<mat>(N,N);
 
 	double norm_A = norm_sq(A,N);

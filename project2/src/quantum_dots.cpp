@@ -49,23 +49,17 @@ int main(int argc, char *argv[]){
 			initial = clock();
 
 			// solve for eigenvalues and eigenvectors
-			while(offdiag_sq(H0,N) > epsilon){
-				get_pivot(H0, N, k, l);
-				rotate(H0, U0, k, l, N);
-			}
-
-			// solve for eigenvalues and eigenvectors
-			while(offdiag_sq(H,N) > epsilon){
-				get_pivot(H, N, k, l);
-				rotate(H, U, k, l, N);
-			}
+			jacobi(H0, U0, N);
+			jacobi(H, U, N);
 
 			// end timer
 			final = clock();
 			time = (final-initial)/((double) CLOCKS_PER_SEC);
-			cout << "\ncomputation time = " << time << " s\n";
+			cout << "computation time = " << time << " s\n";
 
 			write_ground_state(H, H0, U, U0, rho, N, omega, "dots"+to_string(iarg-1)+".dat");
+			
+			cout << endl;
 		}
 	} 
 	

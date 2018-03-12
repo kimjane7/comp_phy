@@ -9,9 +9,7 @@ int main(int argc, char *argv[]){
 
 	double h = 1.0/(N+1), hh= h*h;
 	double d = 2.0/hh, a = -1.0/hh;
-	double time, epsilon = 1E-5;
-	double max_offdiag, Aij; 
-	int k, l, iterations = 0;
+	double time;
 
 	// set-up toeplitz matrix to diagonalize
 	mat A = zeros<mat>(N,N);
@@ -22,7 +20,7 @@ int main(int argc, char *argv[]){
 	}
 	A(N-1,N-1) = d;
 
-	// set-up matrix of eigenvectors
+	// set-up eigenvectors
 	mat V = eye<mat>(N,N);
 
 	// start timer
@@ -30,25 +28,15 @@ int main(int argc, char *argv[]){
 	initial = clock();
 
 	// solve for eigenvalues and eigenvectors
-	while(offdiag_sq(A,N) > epsilon){
-
-		get_pivot(A, N, k, l);
-
-		rotate(A, V, k, l, N);
-
-		iterations += 1;
-	}
+	jacobi(A, V, N);
 
 	// end timer
 	final = clock();
 	time = (final-initial)/((double) CLOCKS_PER_SEC);
-	cout << "\nComputation Time = " << time << " s\n";
+	cout << "Computation Time = " << time << " s\n";
 
-	cout << "Diagonalized in " << iterations << " iterations\n" << endl;
-
-	cout << "* EIGENVECTORS *" << endl;
-	print_matrix(V,N);
-
+	// print eigenvectors
+	//print_matrix(A, N);
 
 	return 0;
 }
