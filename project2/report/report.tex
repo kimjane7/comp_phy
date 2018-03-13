@@ -345,7 +345,7 @@ $N$ & $n$ & time (s) & $n/N^2$ \\
 \hline
 \end{tabular}
 
-\vspace*{3mm}
+\vspace*{5mm}
 \textit{Table 1.} The number of transformations (n) and the computation time required to diagonalize a tridiagonal Toeplitz matrix of dimension $N$.
 \end{center}
 
@@ -354,6 +354,13 @@ From the table above, it is clear to see that the number of iterations $n$ is ap
 \subsection{One Electron Harmonic Oscillator}
 
 Jacobi's algorithm was used to determine the energies and the corresponding wavefunctions for a single electron in a harmonic oscillator potential. The modified wavefunctions $u(\rho)$ for the first three energies are plotted in Figure 1. This problem has analytic eigenvalues as well, but unlike the buckling beam problem, the calculated eigenvalues approach the analytic values as the step size $h$ becomes small. If we fix $\rho_{min}$ at zero, there are two parameters which determine the size of $h$: $\rho_{max}$ and $N$. The following tables contain the calculated eigenvalues for various combinations of $\rho_{max}$ and $N$. 
+\begin{center}
+\begin{figure*}
+\includegraphics[scale=0.7]{wvfunc_1e.pdf}
+
+\textit{Figure 1.} The approximate wavefunctions of the lowest three energy states for one electron in a three-dimensional harmonic oscillator potential are plotted above. Here, $\rho$ is the dimensionless variable defined in Section I. B and $N=400$.
+\end{figure*}
+\end{center}
 
 \begin{center}
 $\rho_{max} = 5$\\
@@ -375,7 +382,7 @@ exact & $N=50$ & $N=150$& $N=250$& $N=350$\\
 23 & 23.2355 & 23.4045 & 23.4184 & 23.4222\\
 \hline
 \end{tabular}
-\vspace*{3mm}
+\vspace*{5mm}
 
 $\rho_{max} = 10$\\
 \begin{tabular}{|c|c|c|c|c|}
@@ -396,34 +403,19 @@ exact & $N=50$ & $N=150$& $N=250$& $N=350$\\
 23 & 23.3442 & 22.9271 & 22.9737 & 22.9865\\
 \hline
 \end{tabular}
-\vspace*{3mm}
+\vspace*{5mm}
 
 \textit{Table 2.} The first six eigenvalues for $\rho_{max} = 5$ (top) and $\rho_{max} = 10$ (bottom).
 \vspace*{2mm}
 \end{center}
 
 Notice that for $\rho_{max}=5$, the first three eigenvalues approach the analytic values as $N$ increases. However, for the next three eigenvalues, the error appears to increase as $N$ becomes large. Doubling $\rho_{max}$ results in slightly less accurate approximations of the first four eigenvalues, but much more stable approximations of the next two eigenvalues as $N$ becomes large.
-\begin{center}
-\begin{figure*}
-\includegraphics[scale=0.6]{wvfunc_1e.pdf}
 
-\textit{Figure 1.} The approximate wavefunctions of the lowest three energy states for one electron in a three-dimensional harmonic oscillator potential are plotted above. Here, $\rho$ is the dimensionless variable defined in Section I. B and $N=400$.
-\end{figure*}
-\end{center}
 To make sense of this behavior, we need to consider the problem we are trying to solve. In this instance, the eigenvalues correspond to energy states of the system, and in general, the wavefunctions corresponding to higher energy states extend to larger $\rho$ (Figure 1). Thus to obtain an accurate estimation of the $n^{th}$ eigenvalue we must first ensure that the window $\left[ \rho_{min},\rho_{max} \right]$ contains the region in which the $n^{th}$ wavefunction is non-zero. 
 
 \subsection{Two Electron Harmonic Oscillator}
 
 In this problem, the variable $\rho$ is a measure of the distance between the two electrons. The ground state probability densities for various harmonic oscillator frequencies $\omega_r$ are plotted in Figure 2. For narrow harmonic oscillator potentials, the Coulomb interaction appears to only alter the average distance between the electrons slighty. The Coulomb interaction has a much larger effect for wider potentials. This agrees with our expectations, since the Coulomb interaction is long-ranged and dominates the Hamiltonian when the harmonic oscillator potential is weak.
-
-
-\begin{center}
-\begin{figure*}
-\includegraphics[scale=0.7]{prob_dens_2e.pdf}
-
-\textit{Figure 2.} The approximate ground state probability densities for various $\omega_r$, with and without the Coulomb interaction. 
-\end{figure*}
-\end{center}
 
 \section{Conclusion}
 
@@ -434,6 +426,14 @@ The inefficiency of Jacobi's algorithm can be attributed to the fact that each r
 Other algorithms should be considered to solve the three specific problems studied in this report. All of the matrices we encountered were not just symmetric, but also tridiagonal. Developing an algorithm with this specific form in mind can shorten the computation time significantly. \\
 
 
+
+\begin{center}
+\begin{figure*}
+\includegraphics[scale=0.7]{prob_dens_2e.pdf}
+
+\textit{Figure 2.} The approximate ground state probability densities for various $\omega_r$, with and without the Coulomb interaction. 
+\end{figure*}
+\end{center} 
 
 
 
