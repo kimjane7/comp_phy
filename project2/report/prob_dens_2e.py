@@ -17,9 +17,9 @@ fig = plt.figure(1)
 axes = plt.gca()
 axes.set_xlim([0,7])
 axes.tick_params(labelsize=14)
-axes.annotate('* = no Coulomb interaction',xy=(4.8,0.019),xytext=(4.8,0.019))
+axes.annotate('* = no Coulomb interaction',xy=(4.8,0.051),xytext=(4.8,0.051))
 
-for i in range(0,3):
+for i in range(0,4):
 	file = np.loadtxt(filenames[i],unpack=True)
 	plt.plot(file[0],file[1],linewidth=2,label=labels[i],color=colors[i])
 	plt.plot(file[0],file[2],linewidth=2,linestyle='--',label=labels[i]+'*',color=colors[i])
@@ -27,7 +27,7 @@ for i in range(0,3):
 
 plt.legend(loc=1, shadow=True)
 plt.xlabel(r'$\rho$', fontsize=16, weight='normal', family='serif')
-plt.ylabel(r'$|u(\rho)|^2$', fontsize=16, weight='normal', family='serif')
+plt.ylabel(r'$|\psi(\rho)|^2$', fontsize=16, weight='normal', family='serif')
 plt.title(r'Ground State Probability Densities for Various $\omega_r$', fontsize=16, weight='normal', family='serif')
 plt.grid()
 

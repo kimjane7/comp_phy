@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 	// set up rho and potential
 	vec rho(N), V(N);
 	for(int i = 0; i < N; i++){
-		rho(i) = rhomin + i*h;
+		rho(i) = rhomin + (i+1)*h;
 		V(i) = rho(i)*rho(i);
 	}
 
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 	time = (final-initial)/((double) CLOCKS_PER_SEC);
 	cout << "Computation Time = " << time << " s\n";
 
-	write_n_eigs(H, U, rho, N, 3, "oscillator");
+	write_n_eigs(H, U, rho, N, 6, "oscillator");
 
 	return 0;
 }

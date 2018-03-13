@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
 
 			omega = atof(argv[iarg]);
 		
-			double rhomin = 0.0, rhomax = 7.0;
+			double rhomin = 0.0, rhomax = 5.0;
 			double h = (rhomax-rhomin)/(N+1), hh = h*h;
 			double d = 2.0/hh, a = -1.0/hh;
 			double epsilon = 1E-8, time;
@@ -103,23 +103,23 @@ int main(int argc, char *argv[]){
 			H0(N-1,N-1) = d+V0(N-1);
 
 			// set-up matrix of eigenvectors
-			mat U0 = eye<mat>(N,N);
-			mat U = eye<mat>(N,N);
+			mat PSI0 = eye<mat>(N,N);
+			mat PSI = eye<mat>(N,N);
 
 			// start timer
 			clock_t initial, final;
 			initial = clock();
 
 			// solve for eigenvalues and eigenvectors
-			jacobi(H0, U0, N);
-			jacobi(H, U, N);
+			jacobi(H0, PSI0, N);
+			jacobi(H, PSI, N);
 
 			// end timer
 			final = clock();
 			time = (final-initial)/((double) CLOCKS_PER_SEC);
 			cout << "computation time = " << time << " s\n";
 
-			write_ground_state(H, H0, U, U0, rho, N, omega, "dots"+to_string(iarg-1)+".dat");
+			write_ground_state(H, H0, PSI, PSI0, rho, N, omega, "dots"+to_string(iarg-1)+".dat");
 			
 			cout << endl;
 		}

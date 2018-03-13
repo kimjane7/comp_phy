@@ -1,5 +1,23 @@
 #include "jacobi.h"
 
+void print_n_eigvals(mat& A, double a, double d, int n, int N){
+
+	vec eigvals(N);
+	vec exact(N);
+
+	for(int i = 0; i < N; i++){
+		eigvals(i) = A(i,i);
+		exact(i) = d+2.0*a*cos((i+1)*pi/(N+1));
+	}
+
+	sort(eigvals.begin(),eigvals.end());
+
+	for(int i = 0; i < n; i++){
+		cout << setprecision(20) << eigvals(i) << "\t" << exact(i) << endl;
+	}
+
+}
+
 
 
 int main(int argc, char *argv[]){
@@ -37,8 +55,9 @@ int main(int argc, char *argv[]){
 	time = (final-initial)/((double) CLOCKS_PER_SEC);
 	cout << "Computation Time = " << time << " s\n";
 
-	// print eigenvectors
-	//print_matrix(A, N);
+	print_n_eigvals(A, a, d, 3, N);
+
+
 
 	return 0;
 }

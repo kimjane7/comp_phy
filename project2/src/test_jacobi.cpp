@@ -4,7 +4,7 @@
 TEST_CASE("TEST: Frobenius norm"){
 
 	int N = 3, k, l;
-	
+
 	mat R = randu<mat>(N,N);
 	mat A = R.t()*R;
 	mat U = eye<mat>(N,N);
@@ -12,10 +12,7 @@ TEST_CASE("TEST: Frobenius norm"){
 	double norm_A = norm_sq(A,N);
 	double epsilon = 1E-5;
 
-	while(offdiag_sq(A, N) > epsilon){
-		get_pivot(A, N, k, l);
-		rotate(A, U, k, l, N);
-	}
+	jacobi(A, U, N);
 
 	double norm_D = norm_sq(A,N);
 
@@ -55,10 +52,7 @@ TEST_CASE("TEST: Tridiagonal Toeplitz matrix eigenvalues"){
 
 	mat U = eye<mat>(N,N);
 	
-	while(offdiag_sq(A, N) > epsilon){
-		get_pivot(A, N, k, l);
-		rotate(A, U, k, l, N);
-	}
+	jacobi(A, U, N);
 
 	for(int i = 0; i < N; i++){
 		eigvals(i) = A(i,i);
@@ -81,10 +75,7 @@ TEST_CASE("TEST: Eigenvector orthogonality"){
 	mat A = R.t()*R;
 	mat U = eye<mat>(N,N);
 
-	while(offdiag_sq(A, N) > epsilon){
-		get_pivot(A, N, k, l);
-		rotate(A, U, k, l, N);
-	}
+	jacobi(A, U, N);
 
 	for(int j1 = 0; j1 < N; j1++){
 		for(int j2 = 0; j2 < N; j2++){
@@ -111,11 +102,7 @@ TEST_CASE("TEST: Compare eigenvalues with Armadillo"){
 	vec eigvals_arma = eig_sym(A);
 	vec eigvals(N);
 	
-	
-	while(offdiag_sq(A, N) > epsilon){
-		get_pivot(A, N, k, l);
-		rotate(A, U, k, l, N);
-	}
+	jacobi(A, U, N);
 
 	for(int i = 0; i < N; i++){
 		eigvals(i) = A(i,i);
