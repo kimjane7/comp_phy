@@ -1,7 +1,3 @@
-// solves system of the form:      
-//      x'' = fx(x,y)
-//      y'' = fy(x,y)
-
 #ifndef SOLAR_SYSTEM_H
 #define SOLAR_SYSTEM_H
 
@@ -35,6 +31,9 @@ public:
 
 	void solve_euler(string filename);
 	void compare_euler(string filename, int maxpower);
+
+	void solve_vv(string filename);
+	void compare_vv(string filename, int maxpower);
 
 };
 

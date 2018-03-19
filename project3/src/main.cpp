@@ -12,7 +12,8 @@ int main(int argc, char *argv[]){
 	binary_system.add(sun);
 	binary_system.add(earth);
 
-	binary_system.compare_euler("binary", 6);
+	binary_system.compare_euler("binary_euler", 6);
+	binary_system.compare_vv("binary_vv", 6);
 
 	return 0;
 }
