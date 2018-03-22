@@ -17,17 +17,23 @@ class CSolarSystem{
 public:
 
 	int N_, planets_;
-	double t0_, tf_, h_;
+	double h_;
 	vector<CPlanet> planet_list_;
+
+	vector<double> t_;
+	vector<vector<double>> x_, y_, vx_, vy_;
 
 	CSolarSystem();
 	CSolarSystem(int N, double t0, double tf);
 	~CSolarSystem(){}
 
+	void add(CPlanet NewPlanet);
+
 	double fx(double x, double y){ return -4.0*pi*pi*x/pow(x*x+y*y,1.5); }
 	double fy(double x, double y){ return -4.0*pi*pi*y/pow(x*x+y*y,1.5); }
 
-	void add(CPlanet NewPlanet);
+	double ax(int j);
+	double ay(int j);
 
 	void solve_euler(string filename);
 	void compare_euler(string filename, int maxpower);
