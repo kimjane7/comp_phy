@@ -29,11 +29,13 @@ public:
 
 	void add(CPlanet NewPlanet);
 
+	double distance(int i, int j, int k);
+
 	double fx(double x, double y){ return -4.0*pi*pi*x/pow(x*x+y*y,1.5); }
 	double fy(double x, double y){ return -4.0*pi*pi*y/pow(x*x+y*y,1.5); }
 
-	double ax(int j);
-	double ay(int j);
+	double ax(int i, int j);
+	double ay(int i, int j);
 
 	void solve_euler(string filename);
 	void compare_euler(string filename, int maxpower);
