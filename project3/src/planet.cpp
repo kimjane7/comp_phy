@@ -2,6 +2,7 @@
 
 CPlanet::CPlanet(){
 
+	name_ = "PlanetX"
 	m_ = 1.0;
 
 	x0_[0] = 1.0;
@@ -14,8 +15,9 @@ CPlanet::CPlanet(){
 
 }	
 
-CPlanet::CPlanet(double m_ratio, double x0, double y0, double z0, double vx0, double vy0, double vz0){
+CPlanet::CPlanet(string name, double m_ratio, double x0, double y0, double z0, double vx0, double vy0, double vz0){
 
+	name_ = name;
 	m_ = m_ratio;
 
 	x0_[0] = x0;

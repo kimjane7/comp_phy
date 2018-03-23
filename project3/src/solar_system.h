@@ -31,17 +31,19 @@ public:
 
 	double distance(int i, int j, int k);
 
-	double fx(double x, double y){ return -4.0*pi*pi*x/pow(x*x+y*y,1.5); }
-	double fy(double x, double y){ return -4.0*pi*pi*y/pow(x*x+y*y,1.5); }
+	void get_acceleration(int i, int j, double& ax, double& ay);
+	void get_energy(int i, int j, double& KE, double& PE);
 
-	double ax(int i, int j);
-	double ay(int i, int j);
+	void solve_euler();
+	void solve_vv();
 
-	void solve_euler(string filename);
-	void compare_euler(string filename, int maxpower);
+	void write_orbits(string filename);
+	void write_energies(string filename);
 
-	void solve_vv(string filename);
-	void compare_vv(string filename, int maxpower);
+	void compare_orbits
+
+	//void compare_euler(string filename, int maxpower); 
+	//void compare_vv(string filename, int maxpower);
 
 };
 
