@@ -252,7 +252,6 @@ void CSolarSystem::write_orbits(string filename){
 
 	outX.close();
 	outY.close();
-	cout << "done!\n" << endl;	
 }
 
 void CSolarSystem::write_energies(string filename){
@@ -294,49 +293,36 @@ void CSolarSystem::write_energies(string filename){
 	}
 
 	outE.close();
-	cout << "done!" << endl;
 }
 
-// writes orbits to file for different numbers of mesh points N
-void CSolarSystem::compare_euler_orbits(string systemname, int maxpower){
+// writes orbits and energies to files for different N using euler's method
+void CSolarSystem::compare_euler(string systemname, int maxpower){
 
+	cout << "\n*** FORWARD EULER ***\n" << endl;
 	for(int n = 2; n <= maxpower; n++){
+
+		cout << "N = 10E" << n << endl;
 		string filename = systemname + "_euler_" + to_string(n);
-		change_N( pow(10,n) );
+		change_N(pow(10,n));
 		solve_euler();
 		write_orbits(filename);
-	}
-}
-
-// writes energies to file for different numbers of mesh points N
-void CSolarSystem::compare_euler_energies(string systemname, int maxpower){
-	
-	for(int n = 2; n <= maxpower; n++){
-		string filename = systemname + "_euler_" + to_string(n);
-		change_N( pow(10,n) );
-		solve_euler();
 		write_energies(filename);
+		cout << endl;		
 	}
 }
 
-// writes orbits to file for different numbers of mesh points N
-void CSolarSystem::compare_vv_orbits(string systemname, int maxpower){
+// writes orbits and energies to files for different N using velocity verlet method
+void CSolarSystem::compare_vv(string systemname, int maxpower){
 
+	cout << "\n*** VELOCITY VERLET ***\n" << endl;
 	for(int n = 2; n <= maxpower; n++){
+
+		cout << "N = 10E" << n << endl;
 		string filename = systemname + "_vv_" + to_string(n);
-		change_N( pow(10,n) );
+		change_N(pow(10,n));
 		solve_vv();
 		write_orbits(filename);
-	}
-}
-
-// writes energies to file for different numbers of mesh points N
-void CSolarSystem::compare_vv_energies(string systemname, int maxpower){
-	
-	for(int n = 2; n <= maxpower; n++){
-		string filename = systemname + "_vv_" + to_string(n);
-		change_N( pow(10,n) );
-		solve_vv();
 		write_energies(filename);
+		cout << endl;		
 	}
 }

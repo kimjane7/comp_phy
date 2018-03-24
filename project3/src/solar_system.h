@@ -44,10 +44,8 @@ public:
 	void write_orbits(string filename);
 	void write_energies(string filename);
 
-	void compare_euler_orbits(string systemname, int maxpower);
-	void compare_euler_energies(string systemname, int maxpower);
-	void compare_vv_orbits(string systemname, int maxpower);
-	void compare_vv_energies(string systemname, int maxpower);
+	void compare_euler(string systemname, int maxpower);
+	void compare_vv(string systemname, int maxpower);
 };
 
 #endif
