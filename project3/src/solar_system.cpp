@@ -26,10 +26,10 @@ CSolarSystem::CSolarSystem(int N, double t0, double tf){
 	h_ = (tf-t0)/N_;
 
 	// set-up time vector
-	t_.resize(N_+1)
+	t_.resize(N_+1);
 	t_[0] = t0;
 	t_[N_] = tf;
-	for(int i = 1; i < N_; i++){ t[i] = t0+i*h_; }
+	for(int i = 1; i < N_; i++){ t_[i] = t0+i*h_; }
 
 	// set-up matrices to store data
 	x_.resize(N_+1);
@@ -52,6 +52,38 @@ void CSolarSystem::add(CPlanet NewPlanet){
 	}
 }
 
+// changes the number of mesh points N and everything dependent on N
+// t0, tf, and number of planets in system remain fixed
+void CSolarSystem::change_N(int new_N){
+
+	// keep initial and final times
+	double t0 = t_[0];
+	double tf = t_[N_];
+
+	N_ = new_N;
+	h_ = (tf-t0)/N_;
+
+	// update time vector
+	t_.resize(N_+1);
+	t_[0] = t0;
+	t_[N_] = tf;
+	for(int i = 1; i < N_; i++){ t_[i] = t0+i*h_; }
+
+	// update matrices to store data
+	x_.resize(N_+1);
+	y_.resize(N_+1);
+	vx_.resize(N_+1);
+	vy_.resize(N_+1);
+
+	// update number of columns
+	for(int i = 0; i <= N_; i++){
+		x_[i].resize(planets_);
+		y_[i].resize(planets_);
+		vx_[i].resize(planets_);
+		vy_[i].resize(planets_);
+	}
+}
+
 // calculates distance between jth and kth planets at ith time step
 double CSolarSystem::distance(int i, int j, int k){
 
@@ -67,7 +99,6 @@ double CSolarSystem::distance(int i, int j, int k){
 // the other planets in the system at the ith time step
 void CSolarSystem::get_acceleration(int i, int j, double& ax, double& ay){
 
-	double prefactor = 4.0*pi*pi;
 	double m, r, rrr;
 
 	ax = 0.0;
@@ -87,11 +118,23 @@ void CSolarSystem::get_acceleration(int i, int j, double& ax, double& ay){
 // calculates the energy of the jth planet at the ith time step
 void CSolarSystem::get_energy(int i, int j, double& KE, double& PE){
 
+	double M, m, r;
+
+	M = planet_list_[j].m_;
+	KE = 0.5*M*(vx_[i][j]*vx_[i][j]+vy_[i][j]*vy_[i][j]);
+	PE = 0.0;
+	for(int k = 0; k < planets_; k++){
+		if(k != j){
+			m = planet_list_[k].m_;
+			r = distance(i, j, k);
+			PE += -prefactor*M*m/r;
+		}
+	}
 }
 
 // solves for trajectories and energies of all planets
 // for now, sun is FIXED at (0,0)
-void CSolarSystem::solve_euler(string filename){
+void CSolarSystem::solve_euler(){
 
 	double m, ax, ay;
 
@@ -124,7 +167,7 @@ void CSolarSystem::solve_euler(string filename){
 	}
 }
 
-void CSolarSystem::solve_vv(string filename){
+void CSolarSystem::solve_vv(){
 
 	double m, ax1, ay1, ax2, ay2;
 
@@ -149,8 +192,8 @@ void CSolarSystem::solve_vv(string filename){
 		for(int j = 1; j < planets_; j++){
 
 			get_acceleration(i-1, j, ax1, ay1);
-			x_[i][j] = x[i-1][j] + h_*vx_[i-1][j] + 0.5*h_*h_*ax1;
-			y_[i][j] = y[i-1][j] + h_*vy_[i-1][j] + 0.5*h_*h_*ay1;
+			x_[i][j] = x_[i-1][j] + h_*vx_[i-1][j] + 0.5*h_*h_*ax1;
+			y_[i][j] = y_[i-1][j] + h_*vy_[i-1][j] + 0.5*h_*h_*ay1;
 
 			get_acceleration(i, j, ax2, ay2);
 			vx_[i][j] = vx_[i-1][j] + 0.5*h_*(ax1+ax2);
@@ -163,192 +206,137 @@ void CSolarSystem::write_orbits(string filename){
 
 	string Xfile = filename + "X.dat";
 	string Yfile = filename + "Y.dat";
-	string heading = "# time";
-
-	cout << "Writing x-coordinates to '" << Xfile << "'... ";
-	cout << "Writing y-coordinates to '" << Yfile << "'... ";
-
-	ofstream outfileX, outfileY;
-	outfileX.open(Xfile);
-	outfileY.open(Yfile);
-
-	outfileX << "# N = " << N_ << endl;
-	outfileX << "# h = " << h_ << endl;
-	outfileX << "# t0 = " << t_[0] << endl;
-	outfileX << "# tf = " << t_[N_] << endl;
-
-	outfileY << "# N = " << N_ << endl;
-	outfileY << "# h = " << h_ << endl;
-	outfileY << "# t0 = " << t_[0] << endl;
-	outfileY << "# tf = " << t_[N_] << endl;
-
+	
 	// make heading to label columns of file
+	string heading = "# time";
 	for(int j = 0; j < planets_; j++){
 		heading += ", " + planet_list_[j].name_;
 	}
 
-	outfileX << heading << endl;
-	outfileY << heading << endl;
+	cout << "Writing x-coordinates to '" << Xfile << "'... " << endl;
+	cout << "Writing y-coordinates to '" << Yfile << "'... " << endl;
 
-	// write all data
+	ofstream outX, outY;
+	outX.open(Xfile);
+	outY.open(Yfile);
+
+	outX << "# N = " << N_ << endl;
+	outX << "# h = " << h_ << endl;
+	outX << "# t0 = " << t_[0] << endl;
+	outX << "# tf = " << t_[N_] << endl;
+
+	outY << "# N = " << N_ << endl;
+	outY << "# h = " << h_ << endl;
+	outY << "# t0 = " << t_[0] << endl;
+	outY << "# tf = " << t_[N_] << endl;
+
+	outX << heading << endl;
+	outY << heading << endl;
+
+	// write positions of all planets to file
 	for(int i = 0; i <= N_; i++){
 
-		// write ith time
-		outfileX << left << setw(14) << setprecision(7) << t_[i];
-		outfileY << left << setw(14) << setprecision(7) << t_[i];
+		// time
+		outX << left << setw(14) << setprecision(7) << t_[i];
+		outY << left << setw(14) << setprecision(7) << t_[i];
 
-		// write positions of all planets at ith time step
+		// positions of planets
 		for(int j = 0; j < planets_; j++){
-			outfileX << left << setw(14) << setprecision(7) << x_[i][j];
-			outfileY << left << setw(14) << setprecision(7) << y_[i][j];
+			outX << left << setw(14) << setprecision(7) << x_[i][j];
+			outY << left << setw(14) << setprecision(7) << y_[i][j];
 		}
 
-		outfileX << endl;
-		outfileY << endl;
+		outX << endl;
+		outY << endl;
 	}
 
-	outfileX.close();
-	outfileY.close();
-	cout << "done!" << endl;	
+	outX.close();
+	outY.close();
+	cout << "done!\n" << endl;	
 }
 
 void CSolarSystem::write_energies(string filename){
 
-}
+	double KE, PE;
+	string Efile = filename + "E.dat";
 
-void CSolarSystem::compare_orbits(string filename, int maxpower){
-
-}
-
-
-/* OLD VERSION
-
-void CSolarSystem::solve_euler(string filename){
-
-	vector<double> t(N_+1);
-	vector<double> x(N_+1), y(N_+1), vx(N_+1), vy(N_+1);
-	double m, v, r, KE, PE;
-
-	// set-up time vector
-	t[0] = t0_;
-	t[N_] = tf_;
-	for(int i = 1; i < N_; i++){ t[i] = t0_+i*h_; }
-
-	// initial conditions of earth
-	x[0] = planet_list_[1].x0_[0];
-	y[0] = planet_list_[1].x0_[1];
-	vx[0] = planet_list_[1].v0_[0];
-	vy[0] = planet_list_[1].v0_[1];
-	m = planet_list_[1].m_;
-
-
-	// euler's method
-	for(int i = 1; i <= N_; i++){
-		x[i] = x[i-1] + h_*vx[i-1];
-		y[i] = y[i-1] + h_*vy[i-1];
-		vx[i] = vx[i-1] + h_*fx(x[i-1],y[i-1]);
-		vy[i] = vy[i-1] + h_*fy(x[i-1],y[i-1]);
+	// make heading to label columns of file
+	string heading = "# time";
+	for(int j = 0; j < planets_; j++){
+		heading += ", " + planet_list_[j].name_;
 	}
 
-	// write to file
-	cout << "Writing trajectories to '" << filename << "'... ";
-	ofstream ofile;
-	ofile.open(filename);
-	ofile << "# t0 = " << t0_ << endl;
-	ofile << "# tf = " << tf_ << endl;
-	ofile << "# N = " << N_ << endl;
-	ofile << "# time (year), x (AU), y (AU), kinetic energy, potential energy, total energy" << endl;
+	cout << "Writing energies to '" << Efile << "'... " << endl;
+
+	ofstream outE;
+	outE.open(Efile);
+
+	outE << "# N = " << N_ << endl;
+	outE << "# h = " << h_ << endl;
+	outE << "# t0 = " << t_[0] << endl;
+	outE << "# tf = " << t_[N_] << endl;
+
+	outE << heading << endl;
+
+	// write all energies to file
 	for(int i = 0; i <= N_; i++){
-		KE = 0.5*m*(vx[i]*vx[i]+vy[i]*vy[i]);
-		PE = -4.0*pi*pi*m/(x[i]*x[i]+y[i]*y[i]);
-		ofile << left << setw(14) << setprecision(7) << t[i];
-		ofile << left << setw(14) << setprecision(7) << x[i];
-		ofile << left << setw(14) << setprecision(7) << y[i];
-		ofile << left << setw(14) << setprecision(7) << KE;
-		ofile << left << setw(14) << setprecision(7) << PE;
-		ofile << left << setw(14) << setprecision(7) << KE+PE << endl;
+
+		// time
+		outE << left << setw(14) << setprecision(7) << t_[i];
+
+		// energies of planet
+		for(int j = 0; j < planets_; j++){
+			get_energy(i, j, KE, PE);
+			outE << left << setw(14) << setprecision(7) << KE+PE;
+		}
+
+		outE << endl;
 	}
 
-	// close file
-	ofile.close();
-	cout << "done!" << endl;
-
-}
-
-void CSolarSystem::solve_vv(string filename){
-
-	vector<double> t(N_+1);
-	vector<double> x(N_+1), y(N_+1), vx(N_+1), vy(N_+1);
-	double m, v, r, KE, PE;
-
-	// set-up time vector
-	t[0] = t0_;
-	t[N_] = tf_;
-	for(int i = 1; i < N_; i++){ t[i] = t0_+i*h_; }
-
-	// initial conditions of earth
-	x[0] = planet_list_[1].x_[0];
-	y[0] = planet_list_[1].x_[1];
-	vx[0] = planet_list_[1].v_[0];
-	vy[0] = planet_list_[1].v_[1];
-	m = planet_list_[1].m_;
-
-
-	// velocity verlet
-	for(int i = 1; i <= N_; i++){
-		x[i] = x[i-1] + h_*vx[i-1] + 0.5*h_*h_*fx(x[i-1],y[i-1]);
-		y[i] = y[i-1] + h_*vy[i-1] + 0.5*h_*h_*fy(x[i-1],y[i-1]);
-		vx[i] = vx[i-1] + 0.5*h_*( fx(x[i],y[i]) + fx(x[i-1],y[i-1]) );
-		vy[i] = vy[i-1] + 0.5*h_*( fy(x[i],y[i]) + fy(x[i-1],y[i-1]) );
-	}
-
-	// write to file
-	cout << "Writing trajectories to '" << filename << "'... ";
-	ofstream ofile;
-	ofile.open(filename);
-	ofile << "# t0 = " << t0_ << endl;
-	ofile << "# tf = " << tf_ << endl;
-	ofile << "# N = " << N_ << endl;
-	ofile << "# time (year), x (AU), y (AU), kinetic energy, potential energy, total energy" << endl;
-	for(int i = 0; i <= N_; i++){
-		KE = 0.5*m*(vx[i]*vx[i]+vy[i]*vy[i]);
-		PE = -4.0*pi*pi*m/(x[i]*x[i]+y[i]*y[i]);
-		ofile << left << setw(14) << setprecision(7) << t[i];
-		ofile << left << setw(14) << setprecision(7) << x[i];
-		ofile << left << setw(14) << setprecision(7) << y[i];
-		ofile << left << setw(14) << setprecision(7) << KE;
-		ofile << left << setw(14) << setprecision(7) << PE;
-		ofile << left << setw(14) << setprecision(7) << KE+PE << endl;
-	}
-
-	// close file
-	ofile.close();
+	outE.close();
 	cout << "done!" << endl;
 }
 
+// writes orbits to file for different numbers of mesh points N
+void CSolarSystem::compare_euler_orbits(string systemname, int maxpower){
 
-void CSolarSystem::compare_euler(string filename, int maxpower){
-
-	// solves system using euler's method for different number of mesh points
-	// writes to files with corresponding power of 10
-	for(int i = 2; i <= maxpower; i++){
-		N_ = pow(10,i);
-		h_ = (tf_-t0_)/N_;
-		string outfile = filename + to_string(i) + ".dat";
-		this->solve_euler(outfile);
+	for(int n = 2; n <= maxpower; n++){
+		string filename = systemname + "_euler_" + to_string(n);
+		change_N( pow(10,n) );
+		solve_euler();
+		write_orbits(filename);
 	}
 }
 
-void CSolarSystem::compare_vv(string filename, int maxpower){
-
-	// solves system using the velocity verlet method for different number of mesh points
-	// writes to files with corresponding power of 10
-	for(int i = 2; i <= maxpower; i++){
-		N_ = pow(10,i);
-		h_ = (tf_-t0_)/N_;
-		string outfile = filename + to_string(i) + ".dat";
-		this->solve_vv(outfile);
+// writes energies to file for different numbers of mesh points N
+void CSolarSystem::compare_euler_energies(string systemname, int maxpower){
+	
+	for(int n = 2; n <= maxpower; n++){
+		string filename = systemname + "_euler_" + to_string(n);
+		change_N( pow(10,n) );
+		solve_euler();
+		write_energies(filename);
 	}
 }
 
-*/
+// writes orbits to file for different numbers of mesh points N
+void CSolarSystem::compare_vv_orbits(string systemname, int maxpower){
+
+	for(int n = 2; n <= maxpower; n++){
+		string filename = systemname + "_vv_" + to_string(n);
+		change_N( pow(10,n) );
+		solve_vv();
+		write_orbits(filename);
+	}
+}
+
+// writes energies to file for different numbers of mesh points N
+void CSolarSystem::compare_vv_energies(string systemname, int maxpower){
+	
+	for(int n = 2; n <= maxpower; n++){
+		string filename = systemname + "_vv_" + to_string(n);
+		change_N( pow(10,n) );
+		solve_vv();
+		write_energies(filename);
+	}
+}

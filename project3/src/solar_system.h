@@ -12,6 +12,9 @@
 
 using namespace std;
 
+const double pi = 4.0*atan(1.0);
+const double prefactor = 4.0*pi*pi;
+
 class CSolarSystem{
 
 public:
@@ -28,6 +31,7 @@ public:
 	~CSolarSystem(){}
 
 	void add(CPlanet NewPlanet);
+	void change_N(int new_N);
 
 	double distance(int i, int j, int k);
 
@@ -40,11 +44,10 @@ public:
 	void write_orbits(string filename);
 	void write_energies(string filename);
 
-	void compare_orbits
-
-	//void compare_euler(string filename, int maxpower); 
-	//void compare_vv(string filename, int maxpower);
-
+	void compare_euler_orbits(string systemname, int maxpower);
+	void compare_euler_energies(string systemname, int maxpower);
+	void compare_vv_orbits(string systemname, int maxpower);
+	void compare_vv_energies(string systemname, int maxpower);
 };
 
 #endif

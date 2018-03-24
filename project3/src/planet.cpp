@@ -2,7 +2,7 @@
 
 CPlanet::CPlanet(){
 
-	name_ = "PlanetX"
+	name_ = "PlanetX";
 	m_ = 1.0;
 
 	x0_[0] = 1.0;
