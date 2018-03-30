@@ -1,36 +1,61 @@
-import matplotlib.pyplot as plt 
-from matplotlib import rc
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 import os
+import sys
+from pylab import *
+matplotlib.rcParams['font.family'] = "serif"
+from matplotlib import ticker
+from matplotlib.ticker import ScalarFormatter
 
-filenames = [("benchmark/binary_vv"+str(i)+".dat") for i in range(2,7)]
-labels = ['$N = 10^2$', '$N = 10^3$', '$N = 10^4$', '$N = 10^5$', '$N = 10^6$']
-colors = ['indianred', 'yellowgreen', 'darkturquoise', 'royalblue','black']
+Xfiles = [("benchmark/binary_vv_"+str(i)+"X.dat") for i in range(2,5)]
+Yfiles = [("benchmark/binary_vv_"+str(i)+"Y.dat") for i in range(2,5)]
+Efiles = [("benchmark/binary_vv_"+str(i)+"E.dat") for i in range(2,5)]
 
+labels = ['$N = 10^2$', '$N = 10^3$', '$N = 10^4$']
+colors = ['darkturquoise', 'indianred', 'black']
 
-plt.figure(1)
-plt.figure(figsize=(16,8))
-plt.rc('text', usetex=True)
+plt.figure(figsize=(6,6))
+fig = plt.figure(1)
+axes = plt.gca()
+axes.set_xlim([-1.4,1.4])
+axes.set_ylim([-1.4,1.4])
+axes.tick_params(labelsize=12)
 
-
-orbit = plt.subplot(221)
-
-plt.xlabel(r'Trajectory of Earth', fontsize=16, weight='normal')
-plt.setp(orbit.get_xticklabels(),fontsize=16)
-plt.setp(orbit.get_yticklabels(),fontsize=16)
 for i in range(0,3):
-	file = np.loadtxt(filenames[i],unpack=True)
-	plt.plot(file[1],file[2],linewidth=1,label=labels[i],color=colors[i])
+	Xfile = np.loadtxt(Xfiles[i],unpack=True)
+	Yfile = np.loadtxt(Yfiles[i],unpack=True)
+	plt.plot(Xfile[2],Yfile[2],linewidth=1,label=labels[i],color=colors[i])
 
-energy = plt.subplot(222)
+plt.legend(loc=1, shadow=True)
+plt.xlabel(r'$x$', fontsize=12, weight='normal', family='serif')
+plt.ylabel(r'$y$', fontsize=12, weight='normal', family='serif')
+plt.title(r'Orbit of Earth (Velocity Verlet)', fontsize=12, weight='normal', family='serif')
+plt.grid()
+plt.tight_layout()
 
-plt.xlabel(r'Energy of Earth', fontsize=16, weight='normal')
-plt.setp(energy.get_xticklabels(),fontsize=16)
-plt.setp(energy.get_yticklabels(),fontsize=16)
+figname = 'binary_vv_orbit.pdf'
+plt.savefig(figname, format='pdf')
+os.system('okular '+figname)
+plt.clf()
+
+plt.figure(figsize=(6,6))
+fig = plt.figure(1)
+axes = plt.gca()
+axes.tick_params(labelsize=12)
+plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+
 for i in range(0,3):
-	file = np.loadtxt(filenames[i],unpack=True)
-	plt.plot(file[0],file[5],linestyle='-',linewidth=1,label=labels[i],color=colors[i])
+	Efile = np.loadtxt(Efiles[i],unpack=True)
+	plt.plot(Efile[0],Efile[2],linewidth=1,label=labels[i],color=colors[i])
 
+plt.legend(loc=1, shadow=True)
+plt.xlabel(r'$t$ (year)', fontsize=12, weight='normal', family='serif')
+plt.ylabel(r'$E$', fontsize=12, weight='normal', family='serif')
+plt.title(r'Energy of Earth (Velocity Verlet)', fontsize=12, weight='normal', family='serif')
+plt.grid()
+plt.tight_layout()
 
-plt.savefig('binary_vv.pdf',format='pdf')
-os.system('okular binary_vv.pdf')
+figname = 'binary_vv_energy.pdf'
+plt.savefig(figname, format='pdf')
+os.system('okular '+figname)
