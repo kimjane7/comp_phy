@@ -23,11 +23,14 @@ public:
 	double h_;
 	vector<CPlanet> planet_list_;
 
+	double xCM_, yCM_;
+	bool CM_frame_;
+
 	vector<double> t_;
 	vector<vector<double>> x_, y_, vx_, vy_;
 
 	CSolarSystem();
-	CSolarSystem(int N, double t0, double tf);
+	CSolarSystem(int N, double t0, double tf, bool CM_frame);
 	~CSolarSystem(){}
 
 	void add(CPlanet NewPlanet);
@@ -38,14 +41,15 @@ public:
 	void get_acceleration(int i, int j, double& ax, double& ay);
 	void get_energy(int i, int j, double& KE, double& PE);
 
+	void initialize();
 	void solve_euler();
 	void solve_vv();
 
-	void write_orbits(string filename);
-	void write_energies(string filename);
-
 	void compare_euler(string systemname, int maxpower);
 	void compare_vv(string systemname, int maxpower);
+
+	void write_orbits(string filename);
+	void write_energies(string filename);
 };
 
 #endif

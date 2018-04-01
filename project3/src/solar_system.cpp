@@ -5,6 +5,7 @@ CSolarSystem::CSolarSystem(){
 	N_ = 1000;
 	planets_ = 0;
 	h_ = 10.0/N_;
+	CM_frame_ = false;
 
 	// set-up time vector
 	t_.resize(N_+1);
@@ -19,11 +20,12 @@ CSolarSystem::CSolarSystem(){
 	vy_.resize(N_+1);
 }
 
-CSolarSystem::CSolarSystem(int N, double t0, double tf){
+CSolarSystem::CSolarSystem(int N, double t0, double tf, bool CM_frame){
 
 	N_ = N;
 	planets_ = 0;
 	h_ = (tf-t0)/N_;
+	CM_frame_ = CM_frame;
 
 	// set-up time vector
 	t_.resize(N_+1);
@@ -108,7 +110,6 @@ void CSolarSystem::get_acceleration(int i, int j, double& ax, double& ay){
 			m = planet_list_[k].m_;
 			r = distance(i, j, k);
 			rrr = r*r*r;
-			// pretty sure these have the right sign, check later
 			ax += prefactor*m*(x_[i][k]-x_[i][j])/rrr;
 			ay += prefactor*m*(y_[i][k]-y_[i][j])/rrr;		
 		}
@@ -132,11 +133,7 @@ void CSolarSystem::get_energy(int i, int j, double& KE, double& PE){
 	}
 }
 
-// solves for trajectories and energies of all planets
-// for now, sun is FIXED at (0,0)
-void CSolarSystem::solve_euler(){
-
-	double m, ax, ay;
+void CSolarSystem::initialize(){
 
 	// initial conditions of planets (including sun)
 	for(int j = 0; j < planets_; j++){
@@ -146,17 +143,63 @@ void CSolarSystem::solve_euler(){
 		vy_[0][j] = planet_list_[j].v0_[1];
 	}
 
+	// shift initial positions if center-of-mass option is chosen
+	// change initial velocity of sun so that total momentum = 0
+	xCM_ = 0.0;
+	yCM_ = 0.0;
+	if(CM_frame_){
+
+		// find center-of-mass position
+		double xsum = 0.0, ysum = 0.0;
+		for(int j = 0; j < planets_; j++){
+			xsum += x_[0][j];
+			ysum += y_[0][j];
+			xCM_ += planet_list_[j].m_*x_[0][j];
+			yCM_ += planet_list_[j].m_*y_[0][j];
+		}
+		if(xsum != 0) xCM_ = xCM_/xsum;
+		if(ysum != 0) yCM_ = yCM_/ysum;
+
+		cout << "CM = (" << xCM_ << "," << yCM_ << ")" << endl;
+
+		// shift
+		for(int j = 0; j < planets_; j++){
+			x_[0][j] -= xCM_;
+			y_[0][j] -= yCM_;
+		}
+
+		// zero out momentum
+		double px = 0.0, py = 0.0;
+		for(int j = 1; j < planets_; j++){
+			px += planet_list_[j].m_*vx_[0][j];
+			py += planet_list_[j].m_*vy_[0][j];
+		}
+		vx_[0][0] = -px/planet_list_[0].m_;
+		vy_[0][0] = -py/planet_list_[0].m_;
+	}
+}
+
+void CSolarSystem::solve_euler(){
+
+	double ax, ay;
+
 	// forward euler
 	for(int i = 1; i <= N_; i++){
 
-		// fix the sun at (0,0)
-		x_[i][0] = 0.0;
-		y_[i][0] = 0.0;
-		vx_[i][0] = 0.0;
-		vy_[i][0] = 0.0;
+		double j0;
+		if(CM_frame_) j0 = 0;
+		else{
+			j0 = 1;
 
-		// calculate orbits of other planets
-		for(int j = 1; j < planets_; j++){
+			// fix the sun at (0,0)
+			x_[i][0] = 0.0;
+			y_[i][0] = 0.0;
+			vx_[i][0] = 0.0;
+			vy_[i][0] = 0.0;			
+		}
+
+		// calculate orbits
+		for(int j = j0; j < planets_; j++){
 
 			x_[i][j] = x_[i-1][j] + h_*vx_[i-1][j];
 			y_[i][j] = y_[i-1][j] + h_*vy_[i-1][j];
@@ -169,15 +212,7 @@ void CSolarSystem::solve_euler(){
 
 void CSolarSystem::solve_vv(){
 
-	double m, ax1, ay1, ax2, ay2;
-
-	// initial conditions of planets (including sun)
-	for(int j = 0; j < planets_; j++){
-		x_[0][j] = planet_list_[j].x0_[0];
-		y_[0][j] = planet_list_[j].x0_[1];
-		vx_[0][j] = planet_list_[j].v0_[0];
-		vy_[0][j] = planet_list_[j].v0_[1];
-	}
+	double ax1, ay1, ax2, ay2;
 
 	// velocity verlet
 	for(int i = 1; i <= N_; i++){
@@ -199,6 +234,40 @@ void CSolarSystem::solve_vv(){
 			vx_[i][j] = vx_[i-1][j] + 0.5*h_*(ax1+ax2);
 			vy_[i][j] = vy_[i-1][j] + 0.5*h_*(ay1+ay2);
 		}		
+	}
+}
+
+// writes orbits and energies to files for different N using euler's method
+void CSolarSystem::compare_euler(string systemname, int maxpower){
+
+	cout << "\n*** FORWARD EULER ***\n" << endl;
+	initialize();
+	for(int n = 2; n <= maxpower; n++){
+
+		cout << "N = 10E" << n << endl;
+		string filename = systemname + "_euler_" + to_string(n);
+		change_N(pow(10,n));
+		solve_euler();
+		write_orbits(filename);
+		write_energies(filename);
+		cout << endl;		
+	}
+}
+
+// writes orbits and energies to files for different N using velocity verlet method
+void CSolarSystem::compare_vv(string systemname, int maxpower){
+
+	cout << "\n*** VELOCITY VERLET ***\n" << endl;
+	initialize();
+	for(int n = 2; n <= maxpower; n++){
+
+		cout << "N = 10E" << n << endl;
+		string filename = systemname + "_vv_" + to_string(n);
+		change_N(pow(10,n));
+		solve_vv();
+		write_orbits(filename);
+		write_energies(filename);
+		cout << endl;		
 	}
 }
 
@@ -293,36 +362,4 @@ void CSolarSystem::write_energies(string filename){
 	}
 
 	outE.close();
-}
-
-// writes orbits and energies to files for different N using euler's method
-void CSolarSystem::compare_euler(string systemname, int maxpower){
-
-	cout << "\n*** FORWARD EULER ***\n" << endl;
-	for(int n = 2; n <= maxpower; n++){
-
-		cout << "N = 10E" << n << endl;
-		string filename = systemname + "_euler_" + to_string(n);
-		change_N(pow(10,n));
-		solve_euler();
-		write_orbits(filename);
-		write_energies(filename);
-		cout << endl;		
-	}
-}
-
-// writes orbits and energies to files for different N using velocity verlet method
-void CSolarSystem::compare_vv(string systemname, int maxpower){
-
-	cout << "\n*** VELOCITY VERLET ***\n" << endl;
-	for(int n = 2; n <= maxpower; n++){
-
-		cout << "N = 10E" << n << endl;
-		string filename = systemname + "_vv_" + to_string(n);
-		change_N(pow(10,n));
-		solve_vv();
-		write_orbits(filename);
-		write_energies(filename);
-		cout << endl;		
-	}
 }
