@@ -363,3 +363,14 @@ void CSolarSystem::write_energies(string filename){
 
 	outE.close();
 }
+
+// checks if jth planet's orbit is stable within time frame
+void CSolarSystem::check_stability(string filename, int j){
+
+	double epsilon = 0.01;
+
+	// make N large enough so that > 3 points per day
+	change_N(1200*ceil(t_[N_]-t_[0]));
+
+
+}
