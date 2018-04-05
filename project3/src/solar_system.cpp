@@ -182,11 +182,11 @@ void CSolarSystem::initialize(){
 void CSolarSystem::solve_euler(){
 
 	double ax, ay;
+	int j0;
 
 	// forward euler
 	for(int i = 1; i <= N_; i++){
 
-		double j0;
 		if(CM_frame_) j0 = 0;
 		else{
 			j0 = 1;
@@ -213,18 +213,24 @@ void CSolarSystem::solve_euler(){
 void CSolarSystem::solve_vv(){
 
 	double ax1, ay1, ax2, ay2;
+	int j0;
 
 	// velocity verlet
 	for(int i = 1; i <= N_; i++){
 
-		// fix the sun at (0,0)
-		x_[i][0] = 0.0;
-		y_[i][0] = 0.0;
-		vx_[i][0] = 0.0;
-		vy_[i][0] = 0.0;
+		if(CM_frame_) j0 = 0;
+		else{
+			j0 = 1;
 
-		// calculate orbits of other planets
-		for(int j = 1; j < planets_; j++){
+			// fix the sun at (0,0)
+			x_[i][0] = 0.0;
+			y_[i][0] = 0.0;
+			vx_[i][0] = 0.0;
+			vy_[i][0] = 0.0;			
+		}
+
+		// calculate orbits
+		for(int j = j0; j < planets_; j++){
 
 			get_acceleration(i-1, j, ax1, ay1);
 			x_[i][j] = x_[i-1][j] + h_*vx_[i-1][j] + 0.5*h_*h_*ax1;
@@ -233,7 +239,7 @@ void CSolarSystem::solve_vv(){
 			get_acceleration(i, j, ax2, ay2);
 			vx_[i][j] = vx_[i-1][j] + 0.5*h_*(ax1+ax2);
 			vy_[i][j] = vy_[i-1][j] + 0.5*h_*(ay1+ay2);
-		}		
+		}	
 	}
 }
 
@@ -302,8 +308,12 @@ void CSolarSystem::write_orbits(string filename){
 	outX << heading << endl;
 	outY << heading << endl;
 
+	// limit number of points to print
+	int istep = 1;
+	if(N_ > 1E4) istep = round(N_/1E4);
+
 	// write positions of all planets to file
-	for(int i = 0; i <= N_; i++){
+	for(int i = 0; i <= N_; i += istep){
 
 		// time
 		outX << left << setw(14) << setprecision(7) << t_[i];
@@ -364,6 +374,7 @@ void CSolarSystem::write_energies(string filename){
 	outE.close();
 }
 
+/*
 // checks if jth planet's orbit is stable within time frame
 void CSolarSystem::check_stability(string filename, int j){
 
@@ -371,6 +382,6 @@ void CSolarSystem::check_stability(string filename, int j){
 
 	// make N large enough so that > 3 points per day
 	change_N(1200*ceil(t_[N_]-t_[0]));
-
-
 }
+
+*/

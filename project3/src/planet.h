@@ -17,6 +17,8 @@ public:
 	CPlanet();
 	CPlanet(string name, double m_ratio, double x0, double y0, double z0, double vx0, double vy0, double vz0);
 
+	void change_IC(double x0, double y0, double z0, double vx0, double vy0, double vz0);
+
 };
 
 #endif

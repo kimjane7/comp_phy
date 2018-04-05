@@ -51,7 +51,7 @@ public:
 	void write_orbits(string filename);
 	void write_energies(string filename);
 
-	void check_stability(string filename, int j);
+	//void check_stability(string filename, int j);
 };
 
 #endif
