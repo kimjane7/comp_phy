@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
 
 
 	// CSolarSystem system(N, t0, tf, CM frame on);
-	CSolarSystem solar_system(2E6, 0.0, 248.0, true);
+	CSolarSystem solar_system(2E4, 0.0, 1.0, true);
 	solar_system.add(sun);
 	solar_system.add(earth);
 	solar_system.add(jupiter);
