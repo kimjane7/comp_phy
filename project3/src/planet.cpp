@@ -38,3 +38,8 @@ CPlanet::change_IC(double x0, double y0, double z0, double vx0, double vy0, doub
 	v0_[1] = vy0;
 	v0_[2] = vz0;	
 }
+
+CPlanet::change_mass(double m_ratio){
+
+	m_ = m_ratio;
+}
