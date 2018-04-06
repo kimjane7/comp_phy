@@ -9,6 +9,7 @@
 #include <vector>
 #include "time.h"
 #include "planet.h"
+#include "time.h"
 
 using namespace std;
 
@@ -19,18 +20,19 @@ class CSolarSystem{
 
 public:
 
-	int N_, planets_;
-	double h_;
-	vector<CPlanet> planet_list_;
-
-	double xCM_, yCM_;
 	bool CM_frame_;
+	int N_, planets_, dim_;
+	double h_, comp_time_;
+	double CM_[3];
 
+
+	vector<CPlanet> planet_list_;
 	vector<double> t_;
-	vector<vector<double>> x_, y_, vx_, vy_;
+	vector<vector<double>> x_, y_, z_;
+	vector<vector<double>> vx_, vy_, vz_;
 
 	CSolarSystem();
-	CSolarSystem(int N, double t0, double tf, bool CM_frame);
+	CSolarSystem(int N, int dim, double t0, double tf, bool CM_frame);
 	~CSolarSystem(){}
 
 	void add(CPlanet NewPlanet);
@@ -38,20 +40,19 @@ public:
 
 	double distance(int i, int j, int k);
 
-	void get_acceleration(int i, int j, double& ax, double& ay);
+	void get_acceleration(int i, int j, double& ax, double& ay, double& az);
 	void get_energy(int i, int j, double& KE, double& PE);
 
 	void initialize();
+
 	void solve_euler();
 	void solve_vv();
-
-	void compare_euler(string systemname, int maxpower);
-	void compare_vv(string systemname, int maxpower);
 
 	void write_orbits(string filename);
 	void write_energies(string filename);
 
-	//void check_stability(string filename, int j);
+	void compare_euler(string systemname, int maxpower);
+	void compare_vv(string systemname, int maxpower);
 };
 
 #endif

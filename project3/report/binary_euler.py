@@ -8,12 +8,17 @@ matplotlib.rcParams['font.family'] = "serif"
 from matplotlib import ticker
 from matplotlib.ticker import ScalarFormatter
 
-Xfiles = [("benchmark/binary_euler_"+str(i)+"X.dat") for i in range(2,7)]
-Yfiles = [("benchmark/binary_euler_"+str(i)+"Y.dat") for i in range(2,7)]
-Efiles = [("benchmark/binary_euler_"+str(i)+"E.dat") for i in range(2,7)]
 
-labels = ['$N = 10^2$', '$N = 10^3$', '$N = 10^4$', '$N = 10^5$', '$N = 10^6$']
-colors = ['indianred', 'yellowgreen', 'darkturquoise', 'royalblue','black']
+##############################################
+#            ORBIT WITH FIXED SUN            #
+##############################################
+
+Xfiles = [("benchmark/binary_fixed_euler"+str(i)+"_X.dat") for i in range(2,8)]
+Yfiles = [("benchmark/binary_fixed_euler"+str(i)+"_Y.dat") for i in range(2,8)]
+Efiles = [("benchmark/binary_fixed_euler"+str(i)+"_E.dat") for i in range(2,8)]
+
+labels = ['$\Delta t = 5$ yr', '$\Delta t = 5\cdot 10^{-1}$ yr', '$\Delta t = 5\cdot 10^{-2}$ yr', '$\Delta t = 5\cdot 10^{-3}$ yr', '$\Delta t = 5\cdot 10^{-4}$ yr','$\Delta t = 5\cdot 10^{-1}$ yr']
+colors = ['indianred', 'yellowgreen', 'darkturquoise', 'royalblue', 'purple', 'black',]
 
 plt.figure(figsize=(6,6))
 fig = plt.figure(1)
@@ -22,7 +27,7 @@ axes.set_xlim([-2,2])
 axes.set_ylim([-2,2])
 axes.tick_params(labelsize=12)
 
-for i in range(0,5):
+for i in range(0,6):
 	Xfile = np.loadtxt(Xfiles[i],unpack=True)
 	Yfile = np.loadtxt(Yfiles[i],unpack=True)
 	plt.plot(Xfile[2],Yfile[2],linewidth=1,label=labels[i],color=colors[i])
@@ -34,7 +39,7 @@ plt.title(r'Orbit of Earth (Forward Euler)', fontsize=12, weight='normal', famil
 plt.grid()
 plt.tight_layout()
 
-figname = 'binary_euler_orbit.pdf'
+figname = 'binary_fixed_euler_orbit.pdf'
 plt.savefig(figname, format='pdf')
 os.system('okular '+figname)
 plt.clf()
@@ -56,6 +61,10 @@ plt.title(r'Energy of Earth (Forward Euler)', fontsize=12, weight='normal', fami
 plt.grid()
 plt.tight_layout()
 
-figname = 'binary_euler_energy.pdf'
+figname = 'binary_fixed_euler_energy.pdf'
 plt.savefig(figname, format='pdf')
 os.system('okular '+figname)
+
+##############################################
+#              ORBIT IN CM FRAME             #
+##############################################

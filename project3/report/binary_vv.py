@@ -8,12 +8,16 @@ matplotlib.rcParams['font.family'] = "serif"
 from matplotlib import ticker
 from matplotlib.ticker import ScalarFormatter
 
-Xfiles = [("benchmark/binary_vv_"+str(i)+"X.dat") for i in range(2,5)]
-Yfiles = [("benchmark/binary_vv_"+str(i)+"Y.dat") for i in range(2,5)]
-Efiles = [("benchmark/binary_vv_"+str(i)+"E.dat") for i in range(2,5)]
+##############################################
+#            ORBIT WITH FIXED SUN            #
+##############################################
 
-labels = ['$N = 10^2$', '$N = 10^3$', '$N = 10^4$']
-colors = ['darkturquoise', 'indianred', 'black']
+Xfiles = [("benchmark/binary_fixed_vv_"+str(i)+"_X.dat") for i in range(2,7)]
+Yfiles = [("benchmark/binary_fixed_vv_"+str(i)+"_Y.dat") for i in range(2,7)]
+Efiles = [("benchmark/binary_fixed_vv_"+str(i)+"_E.dat") for i in range(2,7)]
+
+labels = ['$\Delta t = 5$ year','$\Delta t = 5E-1$ year','$\Delta t = 5E-2$ year','$\Delta t = 5E-3$ year','$\Delta t = 5E-4$ year']
+colors = ['indianred', 'yellowgreen', 'darkturquoise', 'royalblue', 'black',]
 
 plt.figure(figsize=(6,6))
 fig = plt.figure(1)
@@ -22,7 +26,7 @@ axes.set_xlim([-1.4,1.4])
 axes.set_ylim([-1.4,1.4])
 axes.tick_params(labelsize=12)
 
-for i in range(0,3):
+for i in range(0,5):
 	Xfile = np.loadtxt(Xfiles[i],unpack=True)
 	Yfile = np.loadtxt(Yfiles[i],unpack=True)
 	plt.plot(Xfile[2],Yfile[2],linewidth=1,label=labels[i],color=colors[i])
@@ -34,7 +38,7 @@ plt.title(r'Orbit of Earth (Velocity Verlet)', fontsize=12, weight='normal', fam
 plt.grid()
 plt.tight_layout()
 
-figname = 'binary_vv_orbit.pdf'
+figname = 'binary_fixed_vv_orbit.pdf'
 plt.savefig(figname, format='pdf')
 os.system('okular '+figname)
 plt.clf()
@@ -45,7 +49,7 @@ axes = plt.gca()
 axes.tick_params(labelsize=12)
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
-for i in range(0,3):
+for i in range(0,6):
 	Efile = np.loadtxt(Efiles[i],unpack=True)
 	plt.plot(Efile[0],Efile[2],linewidth=1,label=labels[i],color=colors[i])
 
@@ -56,6 +60,6 @@ plt.title(r'Energy of Earth (Velocity Verlet)', fontsize=12, weight='normal', fa
 plt.grid()
 plt.tight_layout()
 
-figname = 'binary_vv_energy.pdf'
+figname = 'binary_fixed_vv_energy.pdf'
 plt.savefig(figname, format='pdf')
 os.system('okular '+figname)

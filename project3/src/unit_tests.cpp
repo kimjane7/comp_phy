@@ -12,5 +12,4 @@ TEST_CASE("TEST: Stability of Earth's Orbit"){
 	cout << "hello" << endl;
 	int x = 10;
 	REQUIRE(x==10);
-	//REQUIRE(test.check_stability(1)==true);
 }
