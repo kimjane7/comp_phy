@@ -160,7 +160,7 @@ void CSolarSystem::initialize(){
 		if(xsum != 0) xCM_ = xCM_/xsum;
 		if(ysum != 0) yCM_ = yCM_/ysum;
 
-		cout << "CM = (" << xCM_ << "," << yCM_ << ")" << endl;
+		cout << "CM = (" << xCM_ << ", " << yCM_ << ")" << endl;
 
 		// shift
 		for(int j = 0; j < planets_; j++){
