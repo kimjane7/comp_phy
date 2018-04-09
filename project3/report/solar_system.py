@@ -12,7 +12,7 @@ Xfile = np.loadtxt("benchmark/solarsystem_CM_euler_X.dat",unpack=True)
 Yfile = np.loadtxt("benchmark/solarsystem_CM_euler_Y.dat",unpack=True)
 Zfile = np.loadtxt("benchmark/solarsystem_CM_euler_Z.dat",unpack=True)
 
-colors = ['darkred','salmon','orange','gold','yellowgreen','cyan','dodgerblue','slateblue','purple','magenta']
+colors = ['indianred','salmon','orange','gold','yellowgreen','cyan','dodgerblue','slateblue','purple','magenta']
 labels = ['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']
 
 plt.figure(figsize=(9,6))

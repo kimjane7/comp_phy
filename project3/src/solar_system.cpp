@@ -363,7 +363,7 @@ void CSolarSystem::write_orbits(string filename){
 
 	// limit number of points to print
 	int istep = 1;
-	if(N_ > 5E5) istep = round(N_/5E5);
+	if(N_ > 1E6) istep = round(N_/1E6);
 
 	// write positions of all planets to file
 	for(int i = 0; i <= N_; i += istep){
@@ -439,7 +439,7 @@ void CSolarSystem::write_energies(string filename){
 
 	// limit number of points to print
 	int istep = 1;
-	if(N_ > 5E5) istep = round(N_/5E5);
+	if(N_ > 1E6) istep = round(N_/1E6);
 
 	// write all energies to file
 	for(int i = 0; i <= N_; i += istep){
@@ -481,7 +481,7 @@ void CSolarSystem::compare_vv(string systemname, int maxpower){
 
 	cout << "\n*** VELOCITY VERLET ***\n" << endl;
 	initialize();
-	for(int n = 2; n <= maxpower; n++){
+	for(int n = 1; n <= maxpower; n++){
 
 		cout << "N = 2E" << n << ":" << endl;
 		string filename = systemname + "_vv" + to_string(n);
