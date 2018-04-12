@@ -1,19 +1,20 @@
 CC = g++
 CFLAGS = -std=c++11
+LIB = -l boost_system
 
 all: run 
 
 
 
 run: main.o SIRS.o
-	${CC} ${CFLAGS} main.o SIRS.o -o run
+	${CC} ${CFLAGS} main.o SIRS.o -o run ${LIB}
 
 
 
 main.o: main.cpp 
 	${CC} ${CFLAGS} -c main.cpp
 SIRS.o: SIRS.cpp
-	${CC} ${CFLAGS} -c SIRS.cpp
+	${CC} ${CFLAGS} -c SIRS.cpp ${LIB}
 
 
 

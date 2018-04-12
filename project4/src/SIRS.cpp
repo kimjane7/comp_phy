@@ -1,6 +1,6 @@
 #include "SIRS.h"
 
-CDiseasedPopulation::CDiseasedPopulation(){
+CInfectedPopulation::CInfectedPopulation(){
 	N_ = 1E5;
 	a_ = 1.0;
 	b_ = 1.0;
@@ -8,7 +8,7 @@ CDiseasedPopulation::CDiseasedPopulation(){
 	dt_ = 1E-5;
 }
 
-CDiseasedPopulation::CDiseasedPopulation(int N, double a, double b, double c){
+CInfectedPopulation::CInfectedPopulation(int N, double a, double b, double c){
 	N_ = N;
 	a_ = a;
 	b_ = b;
@@ -21,13 +21,16 @@ CDiseasedPopulation::CDiseasedPopulation(int N, double a, double b, double c){
 	if(1.0/(c*N) < dt_) dt_ = 1.0/(c*N);
 }
 
-void CDiseasedPopulation::deterministic_SIRS(string filename, double S0, double I0, double R0, double tf){
+
+
+void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double R0, double tf){
 
 	ofstream outfile;
 	outfile.open(filename);
 
 	double S = S0, I = I0, R = R0;
 	double S_k1, S_k2, I_k1, I_k2, R_k1, R_k2;
+
 	for(double t = 0.0; t < tf; t += dt_){
 
 		// print 
@@ -53,6 +56,30 @@ void CDiseasedPopulation::deterministic_SIRS(string filename, double S0, double 
 	outfile.close();
 }
 
-void CDiseasedPopulation::stochastic_SIRS(string filename, int S0, int I0, int R0, double tf){
-	
+void CInfectedPopulation::stochastic_SIRS(string filename, int S0, int I0, int R0, double tf){
+
+	ofstream outfile;
+	outfile.open(filename);
+
+	// this might belong inside loop
+	// can i let r = rand and reuse same number?
+	mt19937 generator(time(0));
+
+	int S = S0, I = I0, R = R0;
+
+	for(double t = 0.0; t < tf; t += dt_){
+
+		// print 
+		outfile << left << setw(14) << setprecision(7) << t;
+		outfile << left << setw(14) << setprecision(7) << S;
+		outfile << left << setw(14) << setprecision(7) << I;
+		outfile << left << setw(14) << setprecision(7) << R << endl;
+
+		// keep-or-reject
+		if(random01(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
+		if(random01(generator) < b_*R*dt_){ S += 1; R -= 1; }
+		if(random01(generator) < c_*I*dt_){ R += 1; I -= 1; }
+	}
+
+	outfile.close();
 }
