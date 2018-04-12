@@ -12,10 +12,8 @@
 \usepackage{amssymb}
 \usepackage{amsbsy}
 \usepackage{tikz}
-%\usepackage{wrapfig}
-%\usepackage{setspace}
-%\usepackage{caption}
-%\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{nicefrac}
 \usetikzlibrary{arrows,shapes,positioning}
 \newenvironment{psmallmatrix}
@@ -74,6 +72,9 @@
 
 \section{Method}
 
+\subsection{Theory}
+\subsection{Forward Euler Method}
+\subsection{Velocity Verlet Method}
 
 \section{Implementation}
 
@@ -84,14 +85,106 @@
 
 \section{Conclusion}
 
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{binary_fixed_euler_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{binary_fixed_euler_energy.pdf}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+\newpage
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{binary_fixed_vv_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{binary_fixed_vv_energy.pdf}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{trinary_fixed_euler_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{trinary_fixed_euler_energy.pdf}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{trinary_fixed_vv_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{trinary_fixed_vv_energy.pdf}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{solar_system_euler_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{solar_system_vv_orbit.pdf}
+  \caption{A subfigure}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{A figure with two subfigures}
+\label{fig:test}
+\end{figure}
 
 \begin{center}
 \begin{figure*}
-\includegraphics[scale=0.7]{binary_euler_orbit.pdf}
+\includegraphics[scale=0.7]{solar_system_euler_orbit.pdf}
 \end{figure*}
 \end{center}
-
-
+\begin{center}
+\begin{figure*}
+\includegraphics[scale=0.7]{solar_system_vv_orbit.pdf}
+\end{figure*}
+\end{center}
 
 
 \newpage 
