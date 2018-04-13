@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -std=c++11
-LIB = -l boost_system
+LIB = 
 
 all: run 
 

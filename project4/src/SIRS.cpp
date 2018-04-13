@@ -26,7 +26,7 @@ CInfectedPopulation::CInfectedPopulation(int N, double a, double b, double c){
 void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double R0, double tf){
 
 	ofstream outfile;
-	outfile.open(filename);
+	outfile.open(filename + ".dat");
 
 	double S = S0, I = I0, R = R0;
 	double S_k1, S_k2, I_k1, I_k2, R_k1, R_k2;
@@ -56,30 +56,35 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 	outfile.close();
 }
 
-void CInfectedPopulation::stochastic_SIRS(string filename, int S0, int I0, int R0, double tf){
+void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, int I0, int R0, double tf){
 
-	ofstream outfile;
-	outfile.open(filename);
+	default_random_engine generator;
+	uniform_real_distribution<double> distribution(0.0, 1.0);
+	
+	for(int i = 0; i < ntrials; ++i){
 
-	// this might belong inside loop
-	// can i let r = rand and reuse same number?
-	mt19937 generator(time(0));
+		ofstream outfile;
+		outfile.open(filename + to_string(i) + ".dat");
+		cout << "write to ---> " << "'" << filename << to_string(i) << ".dat'" << endl;
 
-	int S = S0, I = I0, R = R0;
+		int S = S0, I = I0, R = R0;
 
-	for(double t = 0.0; t < tf; t += dt_){
+		for(double t = 0.0; t < tf; t += dt_){
 
-		// print 
-		outfile << left << setw(14) << setprecision(7) << t;
-		outfile << left << setw(14) << setprecision(7) << S;
-		outfile << left << setw(14) << setprecision(7) << I;
-		outfile << left << setw(14) << setprecision(7) << R << endl;
+			// print 
+			outfile << left << setw(14) << setprecision(7) << t;
+			outfile << left << setw(14) << setprecision(7) << S;
+			outfile << left << setw(14) << setprecision(7) << I;
+			outfile << left << setw(14) << setprecision(7) << R << endl;
 
-		// keep-or-reject
-		if(random01(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
-		if(random01(generator) < b_*R*dt_){ S += 1; R -= 1; }
-		if(random01(generator) < c_*I*dt_){ R += 1; I -= 1; }
+			// keep-or-reject
+			if(distribution(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
+			if(distribution(generator) < b_*R*dt_){ S += 1; R -= 1; }
+			if(distribution(generator) < c_*I*dt_){ R += 1; I -= 1; }
+		}
+
+		outfile.close();
+
 	}
 
-	outfile.close();
 }
