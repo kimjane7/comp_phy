@@ -23,13 +23,19 @@ CInfectedPopulation::CInfectedPopulation(int N, double a, double b, double c){
 
 
 
-void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double R0, double tf){
+void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double tf){
 
 	ofstream outfile;
 	outfile.open(filename + ".dat");
 
-	double S = S0, I = I0, R = R0;
+	cout << "write to ---> " << "'" << filename+".dat'" << endl;
+
+	double S = S0, I = I0, R = N_-S0-I0;
 	double S_k1, S_k2, I_k1, I_k2, R_k1, R_k2;
+
+		outfile << "# N = " << N_ << endl;
+		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
+		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
 
 	for(double t = 0.0; t < tf; t += dt_){
 
@@ -56,7 +62,7 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 	outfile.close();
 }
 
-void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, int I0, int R0, double tf){
+void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, int I0, double tf){
 
 	default_random_engine generator;
 	uniform_real_distribution<double> distribution(0.0, 1.0);
@@ -65,9 +71,13 @@ void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, 
 
 		ofstream outfile;
 		outfile.open(filename + to_string(i) + ".dat");
-		cout << "write to ---> " << "'" << filename << to_string(i) << ".dat'" << endl;
+		cout << "write to ---> " << "'" << filename+to_string(i)+".dat'" << endl;
 
-		int S = S0, I = I0, R = R0;
+		int S = S0, I = I0, R = N_-S0-I0;
+
+		outfile << "# N = " << N_ << endl;
+		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
+		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
 
 		for(double t = 0.0; t < tf; t += dt_){
 

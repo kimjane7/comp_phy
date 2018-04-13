@@ -23,8 +23,8 @@ public:
 	CInfectedPopulation(int N, double a, double b, double c);
 	~CInfectedPopulation(){};
 
-	void deterministic_SIRS(string filename, double S0, double I0, double R0, double tf);
-	void stochastic_SIRS(string filename, int ntrials, int S0, int I0, int R0, double tf);
+	void deterministic_SIRS(string filename, double S0, double I0, double tf);
+	void stochastic_SIRS(string filename, int ntrials, int S0, int I0, double tf);
 };
 
 #endif

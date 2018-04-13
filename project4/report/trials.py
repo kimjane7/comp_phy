@@ -19,22 +19,24 @@ axes.set_xlim([0,15])
 #axes.set_ylim([-6,8])
 axes.tick_params(labelsize=12)
 
-det = np.loadtxt("benchmark/deterministic_test.dat",unpack=True)
-
 
 for j in range(0,100):
 	sto = np.loadtxt(files[j],unpack=True)
 	for i in range(1,4):
-		plt.plot(sto[0],sto[i],linewidth=1,linestyle='-',color=colors[i-1])
+		plt.plot(sto[0],sto[i],linewidth=1,linestyle='-',color=colors[i-1],alpha=0.3)
 
-for i in range(1,4):
-	plt.plot(det[0],det[i],linewidth=0,linestyle='-',label=labels[i-1],color=colors[i-1])
-	plt.plot(det[0],det[i],linewidth=2,linestyle='-',color='k')
+det = np.loadtxt("benchmark/deterministic_test.dat",unpack=True)
 
-plt.legend(loc=1, shadow=True)
+for i in range(1,3):
+	plt.plot(det[0],det[i],linewidth=1,linestyle='-',label=labels[i-1],color=colors[i-1])
+	plt.plot(det[0],det[i],linewidth=1,linestyle='-',color='k')
+plt.plot(det[0],det[3],linewidth=1,linestyle='-',label=labels[2],color=colors[2])
+plt.plot(det[0],det[3],linewidth=1,linestyle='-',label='Deterministic Solutions',color='k')
+
+plt.legend(loc=1, shadow=True, fontsize=12)
 plt.xlabel(r'Time', fontsize=12, weight='normal', family='serif')
 plt.ylabel(r'Number of People', fontsize=12, weight='normal', family='serif')
-plt.title(r'SIRS Model', fontsize=12, weight='normal', family='serif')
+plt.title(r'SIRS Model (100 Samples)', fontsize=12, weight='normal', family='serif')
 #plt.grid()
 plt.tight_layout()
 
@@ -42,3 +44,5 @@ figname = 'trials.pdf'
 plt.savefig(figname, format='pdf')
 os.system('okular '+figname)
 plt.clf()
+
+
