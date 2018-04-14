@@ -62,15 +62,20 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 	outfile.close();
 }
 
-void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, int I0, double tf){
+void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0, int I0, double tf){
 
 	default_random_engine generator;
 	uniform_real_distribution<double> distribution(0.0, 1.0);
-	
-	for(int i = 0; i < ntrials; ++i){
 
-		ofstream outfile;
-		outfile.open(filename + to_string(i) + ".dat");
+	vector<double> time;
+	vector<double> avgS = 0.0, avgI = 0.0, avgR = 0.0;
+	for(double t = 0.0; t < tf; t += dt_) time.push_back(t);
+	int ntimes = time.size();
+	
+	for(int i = 0; i < nsamples; ++i){
+
+		ofstream sample;
+		sample.open(filename + to_string(i) + ".dat");
 		cout << "write to ---> " << "'" << filename+to_string(i)+".dat'" << endl;
 
 		int S = S0, I = I0, R = N_-S0-I0;
@@ -79,7 +84,7 @@ void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, 
 		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
 		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
 
-		for(double t = 0.0; t < tf; t += dt_){
+		for(double j; j < time.; t += dt_){
 
 			// print 
 			outfile << left << setw(14) << setprecision(7) << t;
@@ -87,14 +92,47 @@ void CInfectedPopulation::stochastic_SIRS(string filename, int ntrials, int S0, 
 			outfile << left << setw(14) << setprecision(7) << I;
 			outfile << left << setw(14) << setprecision(7) << R << endl;
 
+			// calculate averages
+			avgS += (double) S;
+			avgI += (double) I;
+			avgR += (double) R;
+
 			// keep-or-reject
 			if(distribution(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
 			if(distribution(generator) < b_*R*dt_){ S += 1; R -= 1; }
 			if(distribution(generator) < c_*I*dt_){ R += 1; I -= 1; }
 		}
-
 		outfile.close();
+	}
 
+
+}
+
+void CInfectedPopulation::generate_phaseportrait(string filename, double tf){
+
+	int points = 4, count = 0;
+	double S0, I0, offset = 5.0;
+	double spacing = (N_-3.0*offset)/points;
+
+	// vertical wall of triangle
+	S0 = offset;
+	for(I0 = offset; I0 <= N_-2.0*offset; I0 += spacing){
+		deterministic_SIRS(filename+to_string(count), S0, I0, tf);
+		count += 1;
+	}
+
+	// horizontal wall
+	I0 = offset;
+	for(S0 = offset+spacing; S0 <= N_-2.0*offset; S0 += spacing){
+		deterministic_SIRS(filename+to_string(count), S0, I0, tf);
+		count += 1;		
+	}
+
+	// hypotenuse
+	for(S0 = offset+spacing; S0 <= offset+(points-1)*spacing; S0 += spacing){
+		I0 = 4.0*spacing-S0;
+		deterministic_SIRS(filename+to_string(count), S0, I0, tf);
+		count += 1;		
 	}
 
 }

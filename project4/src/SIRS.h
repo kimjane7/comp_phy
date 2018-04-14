@@ -24,7 +24,9 @@ public:
 	~CInfectedPopulation(){};
 
 	void deterministic_SIRS(string filename, double S0, double I0, double tf);
-	void stochastic_SIRS(string filename, int ntrials, int S0, int I0, double tf);
+	void montecarlo_SIRS(string filename, int nsamples, int S0, int I0, double tf);
+	
+	void generate_phaseportrait(string filename, double tf);
 };
 
 #endif
