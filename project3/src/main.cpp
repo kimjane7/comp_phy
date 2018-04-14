@@ -47,8 +47,8 @@ int main(int argc, char *argv[]){
 	solar_system.initialize();
 	solar_system.solve_euler();
 	solar_system.write_orbits("solarsystem_fixed_euler");
-	solar_system.solve_euler();
-	solar_system.write_orbits("solarsystem_fixed_euler");
+	solar_system.solve_vv();
+	solar_system.write_orbits("solarsystem_fixed_vv");
 	*/
 	/*
 	CPlanet sun("Sun", 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);

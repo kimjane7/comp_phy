@@ -363,7 +363,7 @@ void CSolarSystem::write_orbits(string filename){
 
 	// limit number of points to print
 	int istep = 1;
-	if(N_ > 1E6) istep = round(N_/1E6);
+	if(N_ > 1E5) istep = round(N_/1E5);
 
 	// write positions of all planets to file
 	for(int i = 0; i <= N_; i += istep){
@@ -439,7 +439,7 @@ void CSolarSystem::write_energies(string filename){
 
 	// limit number of points to print
 	int istep = 1;
-	if(N_ > 1E6) istep = round(N_/1E6);
+	if(N_ > 1E5) istep = round(N_/1E5);
 
 	// write all energies to file
 	for(int i = 0; i <= N_; i += istep){
