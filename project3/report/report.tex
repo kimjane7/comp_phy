@@ -19,6 +19,8 @@
 \newenvironment{psmallmatrix}
   {\left[\begin{matrix}}
   {\end{matrix}\right]}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{decorations.markings}
   
  \usepackage{listings}
 \usepackage{color}
@@ -67,14 +69,40 @@
 \maketitle
 
 \section{Introduction}
+motivation, explain structure of report.
+
+\section{Theory}
+
+The physics background required for this project is not very extensive, as the only force involved is gravity. To start simply, consider two celestial bodies with masses $M_1$ and $M_2$ at the locations $(x_1,y_1)$ and $(x_2,y_2)$ on the $x$-$y$ plane. We can obtain two coupled differential equations for the motion of $M_2$
+\begin{equation}
+\begin{split}
+\frac{d^2x_2}{dt^2} &= \frac{GM_1(x_1-x_2)}{((x_1-x_2)^2+(y_1-y_2)^2)^{3/2}}\\
+\frac{d^2y_2}{dt^2} &= \frac{GM_1(y_1-y_2)}{((x_1-x_2)^2+(y_1-y_2)^2)^{3/2}}
+\end{split}
+\end{equation}
+\noindent using Newton's second law. Now add more planets with masses $M_3, M_4, \ ..., M_n$ into the system. Then to find the equations of motion for the $j^{th}$ planet, we need to sum over the interactions between $M_j$ and all the other $M_k$'s:
+\begin{equation}
+\begin{split}
+\frac{d^2x_j}{dt^2} &= \sum_{\substack{{k = 1}\\k \neq j}}^n \frac{GM_k(x_k-x_j)}{((x_k-x_j)^2+(y_k-y_j)^2)^{3/2}}\\
+\frac{d^2y_j}{dt^2} &= \sum_{\substack{{k = 1}\\k \neq j}}^n \frac{GM_k(y_k-y_j)}{((x_k-x_j)^2+(y_k-y_j)^2)^{3/2}}
+\end{split}
+\end{equation}
+\noindent This can easily be extended into three dimensions:
+\begin{equation}
+\begin{split}
+&\frac{d^2x_j}{dt^2} = \sum_{\substack{{k = 1}\\k \neq j}}^n \frac{GM_k(x_k-x_j)}{r^3}\\
+&\frac{d^2y_j}{dt^2} = \sum_{\substack{{k = 1}\\k \neq j}}^n \frac{GM_k(y_k-y_j)}{r^3}\\
+&\frac{d^2z_j}{dt^2} = \sum_{\substack{{k = 1}\\k \neq j}}^n \frac{GM_k(z_k-z_j)}{r^3}\\
+r = &\sqrt{(x_k-x_j)^2+(y_k-y_j)^2+(z_k-z_j)^2}
+\end{split}
+\end{equation}
 
 
+using convenient units can simplify 
 
 \section{Method}
-
-\subsection{Theory}
-\subsection{Forward Euler Method}
-\subsection{Velocity Verlet Method}
+\subsection{Forward Euler}
+\subsection{Velocity Verlet}
 
 \section{Implementation}
 
@@ -85,7 +113,7 @@
 
 \section{Conclusion}
 
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -101,9 +129,9 @@
 \end{subfigure}
 \caption{A figure with two subfigures}
 \label{fig:test}
-\end{figure}
+\end{figure*}
 \newpage
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
@@ -119,7 +147,7 @@
 \end{subfigure}
 \caption{A figure with two subfigures}
 \label{fig:test}
-\end{figure}
+\end{figure*}
 
 \begin{figure}
 \centering
