@@ -120,9 +120,21 @@ double CSolarSystem::distance(int i, int j, int k){
 
 	x = x_[i][j]-x_[i][k];
 	y = y_[i][j]-y_[i][k];
-	if(dim_ == 3) z_[i][j]-z_[i][k];
+	if(dim_ == 3) z = z_[i][j]-z_[i][k];
 
 	return sqrt(x*x+y*y+z*z);
+}
+
+// calculates velocity of the jth planet at ith time step
+double CSolarSystem::velocity(int i, int j){
+
+	double vx, vy, vz = 0;
+
+	vx = vx_[i][j];
+	vy = vy_[i][j];
+	if(dim_ == 3) vz = vz_[i][j];;
+
+	return sqrt(vx*vx+vy*vy+vz*vz);
 }
 
 // calculates the acceleration of the jth planet due to 
@@ -147,23 +159,35 @@ void CSolarSystem::get_acceleration(int i, int j, double& ax, double& ay, double
 }
 
 // calculates the energy of the jth planet at the ith time step
-void CSolarSystem::get_energy(int i, int j, double& KE, double& PE){
+void CSolarSystem::get_energy(int i, int j, double& E){
 
-	double M, m, r, v2;
+	double M, m, v, r;
 
+	// kinetic energy
 	M = planet_list_[j].m_;
-	v2 = vx_[i][j]*vx_[i][j]+vy_[i][j]*vy_[i][j];
-	if(dim_ == 3) v2 += vz_[i][j]*vz_[i][j]; 
-	KE = 0.5*M*v2;
+	v = velocity(i,j);
+	E = 0.5*M*v*v;
 
-	PE = 0.0;
+	// potential energy
 	for(int k = 0; k < planets_; k++){
 		if(k != j){
 			m = planet_list_[k].m_;
 			r = distance(i, j, k);
-			PE += -prefactor*M*m/r;
+			E += -prefactor*M*m/r;
 		}
 	}
+}
+
+// calculates the angular momentum of the jth planet at the ith time step
+void CSolarSystem::get_angmomentum(int i, int j, double& L){
+
+	double M, v, r;
+
+	M = planet_list_[j].m_;
+	v = velocity(i, j);
+	r = distance(i, j, 0);
+
+	L = M*v*r;
 }
 
 // initial conditions of planets are copied into matrices
@@ -414,7 +438,7 @@ void CSolarSystem::write_orbits(string filename){
 
 void CSolarSystem::write_energies(string filename){
 
-	double KE, PE;
+	double E;
 	string Efile = filename + "_E.dat";
 
 	// make heading to label columns of file
@@ -449,8 +473,8 @@ void CSolarSystem::write_energies(string filename){
 
 		// energies of planet
 		for(int j = 0; j < planets_; j++){
-			get_energy(i, j, KE, PE);
-			outE << left << setw(14) << setprecision(7) << KE+PE;
+			get_energy(i, j, E);
+			outE << left << setw(14) << setprecision(7) << E;
 		}
 
 		outE << endl;

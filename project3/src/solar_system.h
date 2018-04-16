@@ -39,9 +39,11 @@ public:
 	void change_N(int new_N);
 
 	double distance(int i, int j, int k);
+	double velocity(int i, int j);
 
 	void get_acceleration(int i, int j, double& ax, double& ay, double& az);
-	void get_energy(int i, int j, double& KE, double& PE);
+	void get_energy(int i, int j, double& E);
+	void get_angmomentum(int i, int j, double& L);
 
 	void initialize();
 
