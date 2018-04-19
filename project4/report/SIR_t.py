@@ -20,7 +20,7 @@ axes.set_xlim([0,15])
 axes.tick_params(labelsize=12)
 
 det = np.loadtxt("benchmark/deterministic_A.dat",unpack=True)
-sto = np.loadtxt("benchmark/montecarlo_test0.dat",unpack=True)
+sto = np.loadtxt("benchmark/montecarlo_A0.dat",unpack=True)
 
 for i in range(1,4):
 	plt.plot(det[0],det[i],linewidth=1,linestyle='-',color='k')

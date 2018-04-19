@@ -27,19 +27,30 @@ for i in range(0,2):
 	axes.set_xlim([0,15])
 	axes.tick_params(labelsize=12)
 
-
 	for j in range(0,100):
 		sto = np.loadtxt(files[j],unpack=True)
 		for k in range(1,4):
 			plt.plot(sto[0],sto[k],linewidth=1,linestyle='-',color=colors[k-1],alpha=0.3)
 
-	det = np.loadtxt("benchmark/deterministic_"+pops[i]+".dat",unpack=True)
+	stats = np.loadtxt("benchmark/montecarlo_"+pops[i]+"100_stats.dat",unpack=True)
 
-	for k in range(1,3):
-		plt.plot(det[0],det[k],linewidth=1,linestyle='-',label=labels[k-1],color=colors[k-1])
-		plt.plot(det[0],det[k],linewidth=1,linestyle='-',color='k')
-	plt.plot(det[0],det[3],linewidth=1,linestyle='-',label=labels[2],color=colors[2])
-	plt.plot(det[0],det[3],linewidth=1,linestyle='-',label='Deterministic Solutions',color='k')
+	plt.plot(stats[0],stats[1],linewidth=1,linestyle='-',color=colors[0],label=labels[0])
+	plt.plot(stats[0],stats[3],linewidth=1,linestyle='-',color=colors[1])
+	plt.plot(stats[0],stats[5],linewidth=1,linestyle='-',color=colors[2])
+
+	for j in range(0,3)
+
+	plt.plot(stats[0],stats[1],linewidth=1,linestyle='-',color='k',label='Average')
+	plt.plot(stats[0],stats[3],linewidth=1,linestyle='-',color='k')
+	plt.plot(stats[0],stats[5],linewidth=1,linestyle='-',color='k')
+
+	plt.plot(stats[0],stats[1]+stats[2],linewidth=1,linestyle=':',label=r'1 $\sigma$',color='k')
+	plt.plot(stats[0],stats[1]-stats[2],linewidth=1,linestyle=':',color='k')
+	plt.plot(stats[0],stats[3]+stats[4],linewidth=1,linestyle=':',color='k')
+	plt.plot(stats[0],stats[3]-stats[4],linewidth=1,linestyle=':',color='k')
+	plt.plot(stats[0],stats[5]+stats[6],linewidth=1,linestyle=':',color='k')
+	plt.plot(stats[0],stats[5]-stats[6],linewidth=1,linestyle=':',color='k')
+
 
 	plt.legend(loc=1, shadow=True, fontsize=12)
 	plt.xlabel(r'Time', fontsize=12, weight='normal', family='serif')

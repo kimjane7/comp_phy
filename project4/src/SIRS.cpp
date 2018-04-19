@@ -34,6 +34,7 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 		outfile << "# N = " << N_ << endl;
 		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
 		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+		outfile << "# time, S, I, R" << endl;
 
 	for(double t = 0.0; t < tf; t += dt_){
 
@@ -100,7 +101,7 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 	for(int n = 0; n < nsamples; ++n){
 
 		ofstream outfile;
-		outfile.open(filename + to_string(n) + ".dat");
+		outfile.open(filename+to_string(n)+".dat");
 		cout << "write to ---> " << "'" << filename+to_string(n)+".dat'" << endl;
 
 		int S = S0, I = I0, R = N_-S0-I0;
@@ -108,10 +109,11 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 		outfile << "# N = " << N_ << endl;
 		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
 		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+		outfile << "# time, S, I, R" << endl;
 
 		for(int i = 0; i < ntimes; ++i){
 
-			// print 
+			// write to file
 			outfile << time[i] << "\t" << S << "\t" << I << "\t" << R << endl;
 			
 
@@ -130,34 +132,52 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 
 	double t, S, I, R;
 	string dummy;
-	vector<double> sigma(ntimes,0.0);
+	vector<double> varS(ntimes,0.0);
+	vector<double> varI(ntimes,0.0);
+	vector<double> varR(ntimes,0.0);
 
-	// calculate standard deviation
+	// calculate variances
 	for(int n = 0; n < nsamples; ++n){
 
 		ifstream infile;
 		infile.open(filename + to_string(n) + ".dat");
 
-		// ignore first three lines
+		// ignore first four lines
+		getline(infile, dummy);
 		getline(infile, dummy);
 		getline(infile, dummy);
 		getline(infile, dummy);
 
-		while(!infile.eof()){
-			infile >> t >> S >> I >> R >> endl;
-			infile >> S;
-			infile >> I;
-			infile >> R;
-			cout << t << "\t" << S << endl;
+		for(int i = 0; i < ntimes; ++i){
+
+			infile >> t >> S >> I >> R;
+
+			varS[i] += (avgS[i]-S)*(avgS[i]-S)/(nsamples-1);
+			varI[i] += (avgI[i]-I)*(avgI[i]-I)/(nsamples-1);
+			varR[i] += (avgR[i]-R)*(avgR[i]-R)/(nsamples-1);
 		}
 
-	
-
 		infile.close();
-
 	}
 
+	// write averages and standard deviations to file
+	ofstream outfile;
+	outfile.open(filename+to_string(nsamples)+"_stats.dat");
+	cout << "write to ---> " << "'" << filename+to_string(nsamples)+"_stats.dat" << endl;
 
+	outfile << "# N = " << N_ << endl;
+	outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
+	outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+	outfile << "# nsamples = " << nsamples << endl;
+	outfile << "# time, avg S, sigma S, avg I, sigma I, avg R, sigma R" << endl;
+
+	for(int i = 0; i < ntimes; ++i){
+		outfile << time[i] << "\t" << avgS[i] << "\t" << sqrt(varS[i]);
+		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]);
+		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]) << endl;
+	}
+
+	outfile.close();
 }
 
 
