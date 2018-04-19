@@ -21,8 +21,6 @@ CInfectedPopulation::CInfectedPopulation(int N, double a, double b, double c){
 	if(1.0/(c*N) < dt_) dt_ = 1.0/(c*N);
 }
 
-
-
 void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double tf){
 
 	ofstream outfile;
@@ -40,10 +38,7 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 	for(double t = 0.0; t < tf; t += dt_){
 
 		// print 
-		outfile << left << setw(14) << setprecision(7) << t;
-		outfile << left << setw(14) << setprecision(7) << S;
-		outfile << left << setw(14) << setprecision(7) << I;
-		outfile << left << setw(14) << setprecision(7) << R << endl;
+		outfile << t << "\t" << S << "\t" << I << "\t" << R << endl;
 
 		// use RK2 method to calculate next S, I, R
 		S_k1 = dt_*(b_*R-a_*S*I/N_);
@@ -60,52 +55,6 @@ void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double 
 	}
 
 	outfile.close();
-}
-
-void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0, int I0, double tf){
-
-	default_random_engine generator;
-	uniform_real_distribution<double> distribution(0.0, 1.0);
-
-	vector<double> time;
-	vector<double> avgS = 0.0, avgI = 0.0, avgR = 0.0;
-	for(double t = 0.0; t < tf; t += dt_) time.push_back(t);
-	int ntimes = time.size();
-	
-	for(int i = 0; i < nsamples; ++i){
-
-		ofstream sample;
-		sample.open(filename + to_string(i) + ".dat");
-		cout << "write to ---> " << "'" << filename+to_string(i)+".dat'" << endl;
-
-		int S = S0, I = I0, R = N_-S0-I0;
-
-		outfile << "# N = " << N_ << endl;
-		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
-		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
-
-		for(double j; j < time.; t += dt_){
-
-			// print 
-			outfile << left << setw(14) << setprecision(7) << t;
-			outfile << left << setw(14) << setprecision(7) << S;
-			outfile << left << setw(14) << setprecision(7) << I;
-			outfile << left << setw(14) << setprecision(7) << R << endl;
-
-			// calculate averages
-			avgS += (double) S;
-			avgI += (double) I;
-			avgR += (double) R;
-
-			// keep-or-reject
-			if(distribution(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
-			if(distribution(generator) < b_*R*dt_){ S += 1; R -= 1; }
-			if(distribution(generator) < c_*I*dt_){ R += 1; I -= 1; }
-		}
-		outfile.close();
-	}
-
-
 }
 
 void CInfectedPopulation::generate_phaseportrait(string filename, double tf){
@@ -134,5 +83,81 @@ void CInfectedPopulation::generate_phaseportrait(string filename, double tf){
 		deterministic_SIRS(filename+to_string(count), S0, I0, tf);
 		count += 1;		
 	}
+}
+
+void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0, int I0, double tf){
+
+	mt19937 generator;
+	uniform_real_distribution<double> distribution(0.0, 1.0);
+
+	vector<double> time;
+	for(double t = 0.0; t < tf; t += dt_) time.push_back(t);
+	int ntimes = time.size();
+
+	vector<double> avgS(ntimes,0.0), avgI(ntimes,0.0), avgR(ntimes,0.0);
+
+	// create random samples
+	for(int n = 0; n < nsamples; ++n){
+
+		ofstream outfile;
+		outfile.open(filename + to_string(n) + ".dat");
+		cout << "write to ---> " << "'" << filename+to_string(n)+".dat'" << endl;
+
+		int S = S0, I = I0, R = N_-S0-I0;
+
+		outfile << "# N = " << N_ << endl;
+		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
+		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+
+		for(int i = 0; i < ntimes; ++i){
+
+			// print 
+			outfile << time[i] << "\t" << S << "\t" << I << "\t" << R << endl;
+			
+
+			// calculate averages
+			avgS[i] += S/(double) nsamples;
+			avgI[i] += I/(double) nsamples;
+			avgR[i] += R/(double) nsamples;
+
+			// keep-or-reject
+			if(distribution(generator) < a_*S*I*dt_/N_){ I += 1; S -= 1; }
+			if(distribution(generator) < b_*R*dt_){ S += 1; R -= 1; }
+			if(distribution(generator) < c_*I*dt_){ R += 1; I -= 1; }
+		}
+		outfile.close();
+	}
+
+	double t, S, I, R;
+	string dummy;
+	vector<double> sigma(ntimes,0.0);
+
+	// calculate standard deviation
+	for(int n = 0; n < nsamples; ++n){
+
+		ifstream infile;
+		infile.open(filename + to_string(n) + ".dat");
+
+		// ignore first three lines
+		getline(infile, dummy);
+		getline(infile, dummy);
+		getline(infile, dummy);
+
+		while(!infile.eof()){
+			infile >> t >> S >> I >> R >> endl;
+			infile >> S;
+			infile >> I;
+			infile >> R;
+			cout << t << "\t" << S << endl;
+		}
+
+	
+
+		infile.close();
+
+	}
+
 
 }
+
+

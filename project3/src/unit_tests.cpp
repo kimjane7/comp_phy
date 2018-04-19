@@ -77,11 +77,11 @@ TEST_CASE("TEST: Escape Velocity of Earth"){
 
 	// bisection method to find escape velocity
 	int N = 1E5;
-	double a = 2.0*pi, b = 3.0*pi;
+	double min = 2.0*pi, max = 3.0*pi;
 	double v0, E;
-	while(b-a > 1.0E-5){
+	while(max-min > 1.0E-5){
 
-		v0 = 0.5*(a+b);
+		v0 = 0.5*(min+max);
 
 		CPlanet sun("Sun", 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		CPlanet earth("Earth", 3.0E-6, 1.0, 0.0, 0.0, 0.0, v0, 0.0);
@@ -92,8 +92,8 @@ TEST_CASE("TEST: Escape Velocity of Earth"){
 		test.solve_vv();
 		test.get_energy(N, 1, E);
 
-		if(E < 0) a = v0;
-		if(E > 0) b = v0;
+		if(E < 0) min = v0;
+		if(E > 0) max = v0;
 	}
 
 	cout << "\tEstimated escape velocity = " << v0 << " AU/yr." << endl;
