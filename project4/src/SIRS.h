@@ -25,8 +25,8 @@ public:
 
 	void deterministic_SIRS(string filename, double S0, double I0, double tf);
 	void generate_phaseportrait(string filename, double tf);
-
 	void montecarlo_SIRS(string filename, int nsamples, int S0, int I0, double tf);
+	void lattice_SIRS(string filename, int nsamples, int SO, int I0, double tf);
 };
 
 #endif
