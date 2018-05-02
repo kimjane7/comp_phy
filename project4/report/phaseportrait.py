@@ -8,15 +8,15 @@ matplotlib.rcParams['font.family'] = "serif"
 from matplotlib import ticker
 from matplotlib.ticker import ScalarFormatter
  
-pops = ['A','B']
-a = [r'a = 5',r'a = 1']
-b = [r'b = 0.5',r'b = 1']
-c = [r'c = 2',r'c = 2.5']
+pops = ['A','B','C','D']
+a = [r'a = 4',r'a = 4',r'a = 4',r'a = 4']
+b = [r'b = 1',r'b = 2',r'b = 3',r'b = 4']
+c = [r'c = 0.5',r'c = 0.5',r'c = 0.5',r'c = 0.5']
 
 labels = ['Susceptible','Infected','Resistant']
 colors = ['yellowgreen','indianred','dodgerblue']
 
-for i in range(0,2):
+for i in range(0,4):
 
 	files = ['benchmark/phaseportrait_'+pops[i]+str(j)+'.dat' for j in range(0,12)]
 	plt.figure(figsize=(6,6))
@@ -29,7 +29,7 @@ for i in range(0,2):
 	# curves
 	for j in range(0,12):
 		file = np.loadtxt(files[j],unpack=True)
-		plt.plot(file[1]/500,file[2]/500,linewidth=1,linestyle='-',color='darkcyan')
+		plt.plot(file[1]/400,file[2]/400,linewidth=1,linestyle='-',color='darkcyan')
 
 	# triangle boundary
 	x = np.arange(0.0,1.0,0.01)
@@ -48,8 +48,8 @@ for i in range(0,2):
 	#plt.grid()
 	plt.tight_layout()
 
-	figname = 'phaseportrait_'+pops[i]+'.pdf'
-	plt.savefig(figname, format='pdf')
+	figname = 'phaseportrait_'+pops[i]+'.png'
+	plt.savefig(figname, format='png')
 	os.system('okular '+figname)
 	plt.clf()
 
