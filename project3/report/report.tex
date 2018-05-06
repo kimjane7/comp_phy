@@ -61,15 +61,18 @@
 
 
 \begin{abstract}
-
 \vspace*{5mm}
-\noindent Summary, numbers.
+The trajectories and energies of planets in a gravitationally coupled system were calculated using two different algorithms for solving differential equations. The forward Euler method was straightforward to implement, but it did not produce stable orbits or conserve energy. The velocity Verlet method was only slightly more complicated than Euler's method, but it provided significantly better results. For time steps less than $\sim 22$ days, the velocity Verlet algorithm produced stable orbits and constant energies for systems with a few planets. The full solar system used a time step of $\sim 43.5$ s, and was only stable using the latter method. 
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
-motivation, explain structure of report.
+
+The objective for this project was to simulate the solar system by solving for the equations of motion for each planet. Two different algorithms, the forward Euler method and the velocity Verlet method, were used to solve the system of coupled differential equations. Object orientation was essential in creating a readable, modular, and user-friendly program. \\
+
+The coupled differential equations are derived in Section II, along with slight improvements which simplify the computations. The methods for solving the equations are discussed in Section III. The structure of the program and the implementation of the algorithms are presented in Section IV, and Section V describes the various unit tests developed for the project. The trajectories and energies of the planets for the Sun-Earth, Sun-Earth-Jupiter, and full solar systems are discussed in Section VI and plotted at the end of the report. Finally, the conclusion is written in Section VII. \\
+
 
 \section{Theory}
 
@@ -411,115 +414,100 @@ while(max-min > 1.0E-5){
 A time step of \texttt{h\_}$=10^{-5} \text{yr}=5.26$ provided enough accuracy to correctly find the escape velocity up to 5 places after the decimal point. 
 
 \section{Results}
-All four tests, consisting of 10204 assertions, were passed. 
+All four tests, consisting of 10204 assertions, were passed. We were also interested in comparing the two algorithms for solving differential equations and producing stable systems. In the Sun-Earth binary system, Euler's method yielded noticable increases in the radius of Earth's orbit over 50 years for all time steps used (see FIG. 1). One can extrapolate that even with a step size as small as \texttt{h\_}$=2.5\cdot10^{-6}$ yr $\approx$ 1.31 s, Earth would eventually spiral out of orbit. Thus it appears to be difficult for the forward Euler method to produce a stable system. \\
+
+Alternatively, the velocity Verlet method produced stable orbits for all time steps less than \texttt{h\_}$=2.5\cdot10^{-3}$ yr $\approx$ 21.9 days. This is a significant improvement from the previous algorithm, and it is particularly apparent in the case where \texttt{h\_}$=0.25$ yr. With the Euler method, we would expect that using a time step this large would cause Earth to immediately leave the orbit of the Sun. But the velocity Verlet method corrects this behavior surprisingly quickly, as shown in FIG. 2. The orbits for the remaining time steps appear to coincide, but the energy plot reveals that Earth's energy is only constant for time steps equal to or less than 21.9 days.\\
+
+Adding Jupiter into this system creates a trinary system. The orbits and energies of both planets are plotted in FIG. 3 and 4. Euler's method, again, failed to generate orbits that withstood the test of time. However, the scale of the energy plot makes the energies for \texttt{h\_}$=2.5\cdot10^{-6}$ yr $\approx$ 1.31 s appear constant. The velocity Verlet method created circular orbits for both planets for nearly all the time steps tested. Notice that the energies using the Euler method consistently increase over time, whereas the energies using the velocity Verlet method eventually levels off, even for large time steps. Also, notice the difference in Earth's orbit between FIG. 2 (a) and FIG. 4 (a). For the case where \texttt{h\_}$=0.25$ yr, the presence of Jupiter caused Earth to fall out of orbit immediately. 
+
+Lastly, we created a model of the entire solar system (including Pluto) using initial conditions provided by the Jet Propulsion Laboratory's HORIZON system. For this case, we included the third dimension in the calculations and worked in the center of mass frame. A time step of \texttt{h\_} $\approx 43.5$ s was used for both methods.  Planets with smaller orbital radii orbit the Sun many times before Pluto completes one orbit. Thus the instability of Mercury, Venus, and Earth using Euler's method (FIG. 5) suggests the entire solar system is also unstable. Fortunately, the velocity Verlet method does, in fact, produce a stable solar system (FIG. 6).\\
 
 \section{Conclusion}
+
+Both algorithms are derived by neglecting certain higher order terms in the Taylor expansion of the solution to a differential equation. The forward Euler method is simple and intuitive to implement, but it does not conserve energy as we hope for an isolated system. Neither does it produce reliable orbits that remain stable over hundreds of years. The velocity Verlet method, on the other hand, does conserve energy and is arguably just as simple to implement. Hence the latter method is clearly superior.
 
 \begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{binary_fixed_euler_orbit.pdf}
-  \caption{A subfigure}
+  \caption{\vspace*{1mm}}
   \label{fig:sub1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{binary_fixed_euler_energy.pdf}
-  \caption{A subfigure}
+  \caption{\vspace*{1mm}}
   \label{fig:sub2}
 \end{subfigure}
-\caption{A figure with two subfigures}
+\caption{The trajectory (a) and energy (b) of Earth in the Sun-Earth binary system for several different time steps using the forward Euler method. None of the cases tested produced constant energy values.}
 \label{fig:test}
 \end{figure*}
-\newpage
 \begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{binary_fixed_vv_orbit.pdf}
-  \caption{A subfigure}
+  \caption{\vspace*{1mm}}
   \label{fig:sub1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{binary_fixed_vv_energy.pdf}
-  \caption{A subfigure}
+  \caption{\vspace*{1mm}}
   \label{fig:sub2}
 \end{subfigure}
-\caption{A figure with two subfigures}
+\caption{The trajectory (a) and energy (b) of Earth in the Sun-Earth binary system for several different time steps using the velocity Verlet method. Four of the six time steps produced constant energy values, all of which were also used to test the forward Euler method. }
 \label{fig:test}
 \end{figure*}
-
-\begin{figure}
+\begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{trinary_fixed_euler_orbit.pdf}
-  \caption{A subfigure}
   \label{fig:sub1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{trinary_fixed_euler_energy.pdf}
-  \caption{A subfigure}
   \label{fig:sub2}
 \end{subfigure}
-\caption{A figure with two subfigures}
+\caption{The orbits (a) and energies (b) of both Earth and Jupiter in the Sun-Earth-Jupiter trinary system using the forward Euler method. Earth is represented by the solid lines, while Jupiter is represented by the dashed lines.}
 \label{fig:test}
-\end{figure}
-
-\begin{figure}
+\end{figure*}
+\begin{figure*}
 \centering
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{trinary_fixed_vv_orbit.pdf}
-  \caption{A subfigure}
   \label{fig:sub1}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
   \includegraphics[width=\linewidth]{trinary_fixed_vv_energy.pdf}
-  \caption{A subfigure}
   \label{fig:sub2}
 \end{subfigure}
-\caption{A figure with two subfigures}
+\caption{The orbits (a) and energies (b) of both Earth and Jupiter in the Sun-Earth-Jupiter trinary system using the velocity Verlet method. Earth is represented by the solid lines, while Jupiter is represented by the dashed lines.}
 \label{fig:test}
-\end{figure}
-
-\begin{figure}
-\centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{solar_system_euler_orbit.pdf}
-  \caption{A subfigure}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{solar_system_vv_orbit.pdf}
-  \caption{A subfigure}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{A figure with two subfigures}
-\label{fig:test}
-\end{figure}
+\end{figure*}
 
 \begin{center}
 \begin{figure*}
 \includegraphics[scale=0.7]{solar_system_euler_orbit.pdf}
+\caption{The trajectories of the full solar system using the forward Euler method.}
 \end{figure*}
 \end{center}
 \begin{center}
 \begin{figure*}
 \includegraphics[scale=0.7]{solar_system_vv_orbit.pdf}
+\caption{The trajectories of the full solar system using the velocity Verlet method.}
 \end{figure*}
 \end{center}
 
 
-\newpage 
 \begin{references}
 \bibitem{notes} M. Hjorth-Jensen. "Computation Physics, Lecture Notes Fall 2015". University of Oslo. August 2015.
+\bibitem{nasa} Jet Propulsion Laboratory. "Solar System Dynamics". NASA. https://ssd.jpl.nasa.gov/horizons.cgi\#top.
 \end{references}
 
 \end{document}
