@@ -130,10 +130,13 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 	}
 
 	double t, S, I, R;
+	double avg_sigS = 0.0, avg_sigI = 0.0, avg_sigR = 0.0;
 	string dummy;
 	vector<double> varS(ntimes,0.0);
 	vector<double> varI(ntimes,0.0);
 	vector<double> varR(ntimes,0.0);
+	int count = 0;
+
 
 	// calculate variances
 	for(int n = 0; n < nsamples; ++n){
@@ -154,6 +157,10 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 			varS[i] += (avgS[i]-S)*(avgS[i]-S)/(nsamples-1);
 			varI[i] += (avgI[i]-I)*(avgI[i]-I)/(nsamples-1);
 			varR[i] += (avgR[i]-R)*(avgR[i]-R)/(nsamples-1);
+
+			avg_sigS += sqrt(varS[i])/(nsamples*ntimes);
+			avg_sigI += sqrt(varI[i])/(nsamples*ntimes);
+			avg_sigR += sqrt(varR[i])/(nsamples*ntimes);
 		}
 
 		infile.close();
@@ -165,15 +172,16 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 	cout << "write to ---> " << "'" << filename+to_string(nsamples)+"_stats.dat" << endl;
 
 	outfile << "# N = " << N_ << endl;
-	outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
-	outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
 	outfile << "# nsamples = " << nsamples << endl;
+	outfile << "# (S0, I0, R0) = (" << S0 << ", " << I0 << ", " << N_-S0-I0 << ")" << endl;
+	outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+	outfile << "# time avg std dev (<sigma S>, <sigma I>, <sigma R>) = (" << avg_sigS << ", " << avg_sigI << ", " << avg_sigR << ")" << endl;
 	outfile << "# time, avg S, sigma S, avg I, sigma I, avg R, sigma R" << endl;
 
 	for(int i = 0; i < ntimes; ++i){
 		outfile << time[i] << "\t" << avgS[i] << "\t" << sqrt(varS[i]);
 		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]);
-		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]) << endl;
+		outfile << "\t" << avgR[i] << "\t" << sqrt(varR[i]) << endl;
 	}
 
 	outfile.close();
@@ -309,70 +317,22 @@ void CInfectedPopulation::lattice_SIRS(string filename, int nsamples, int S0, in
 
 				// pick a recovered site
 				uniform_int_distribution<int> randR(0, R-1);
-				r = randR(generator);
+				int r = randR(generator);
 				i = recovered[r][0];
 				j = recovered[r][1];
 
 				// become susceptible with probability gamma
 				if(rand01(generator) < gamma){
+					S += 1;
+					R -= 1;
+					state[i][j] = 0;
 					recovered.erase(recovered.begin()+r);
 				}
 			}
 
-
-
 		}
 		outfile.close();
 	}
-
-	double t, S, I, R;
-	string dummy;
-	vector<double> varS(ntimes,0.0);
-	vector<double> varI(ntimes,0.0);
-	vector<double> varR(ntimes,0.0);
-
-	// calculate variances
-	for(int n = 0; n < nsamples; ++n){
-
-		ifstream infile;
-		infile.open(filename + to_string(n) + ".dat");
-
-		// ignore first four lines
-		getline(infile, dummy);
-		getline(infile, dummy);
-		getline(infile, dummy);
-		getline(infile, dummy);
-
-		for(int i = 0; i < ntimes; ++i){
-
-			infile >> t >> S >> I >> R;
-
-			varS[i] += (avgS[t]-S)*(avgS[t]-S)/(nsamples-1);
-			varI[i] += (avgI[t]-I)*(avgI[t]-I)/(nsamples-1);
-			varR[i] += (avgR[t]-R)*(avgR[t]-R)/(nsamples-1);
-		}
-
-		infile.close();
-	}
-
-	// write averages and standard deviations to file
-	ofstream outfile;
-	outfile.open(filename+to_string(nsamples)+"_stats.dat");
-	cout << "write to ---> " << "'" << filename+to_string(nsamples)+"_stats.dat" << endl;
-
-	outfile << "# N = " << N_ << endl;
-	outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
-	outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
-	outfile << "# nsamples = " << nsamples << endl;
-	outfile << "# time, avg S, sigma S, avg I, sigma I, avg R, sigma R" << endl;
-
-	for(int i = 0; i < ntimes; ++i){
-		outfile << time[i] << "\t" << avgS[i] << "\t" << sqrt(varS[i]);
-		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]);
-		outfile << "\t" << avgI[i] << "\t" << sqrt(varI[i]) << endl;
-	}
-
-	outfile.close();
 
 
 }

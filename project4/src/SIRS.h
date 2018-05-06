@@ -15,7 +15,6 @@ class CInfectedPopulation{
 public:
 
 	int N_;
-
 	double dt_;
 	double a_, b_, c_;
 

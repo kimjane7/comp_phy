@@ -61,7 +61,7 @@ TEST_CASE("TEST: Conservation of Angular Momentum"){
 	test.initialize();
 	test.solve_vv();
 
-	// get initial energy of Earth
+	// get initial angular momentum of Earth
 	test.get_angmomentum(0, 1, L0);
 
 	// check energy of Earth remains the same
@@ -96,8 +96,8 @@ TEST_CASE("TEST: Escape Velocity of Earth"){
 		if(E > 0) max = v0;
 	}
 
-	cout << "\tEstimated escape velocity = " << v0 << " AU/yr." << endl;
-	cout << "\tTheoretical escape velocity = " << 2.0*sqrt(2.0)*pi << " AU/yr." << endl;
+	cout << "\tEstimated escape velocity = " << setprecision(15) << v0 << " AU/yr." << endl;
+	cout << "\tTheoretical escape velocity = " << setprecision(15) << 2.0*sqrt(2.0)*pi << " AU/yr." << endl;
 
 	REQUIRE(v0 == Approx(2.0*sqrt(2.0)*pi));
 }

@@ -11,8 +11,6 @@ from matplotlib.ticker import ScalarFormatter
 plt.figure(figsize=(6,6))
 fig = plt.figure(1)
 axes = plt.gca()
-#axes.set_xlim([0,500])
-#axes.set_ylim([0,500])
 axes.tick_params(labelsize=12)
 
 det = np.loadtxt("benchmark/deterministic_A.dat",unpack=True)
@@ -25,11 +23,11 @@ plt.plot(det[1],det[2],linewidth=1,linestyle='-',color='k')
 plt.legend(loc=1, shadow=True)
 plt.xlabel(r'Susceptible People', fontsize=12, weight='normal', family='serif')
 plt.ylabel(r'Infected People', fontsize=12, weight='normal', family='serif')
-plt.title(r'SIRS Model', fontsize=12, weight='normal', family='serif')
+plt.title(r'Population A', fontsize=12, weight='normal', family='serif')
 #plt.grid()
 plt.tight_layout()
 
-figname = 'S_I.pdf'
-plt.savefig(figname, format='pdf')
+figname = 'S_I.png'
+plt.savefig(figname, format='png')
 os.system('okular '+figname)
 plt.clf()
