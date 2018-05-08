@@ -23,18 +23,20 @@ CInfectedPopulation::CInfectedPopulation(int N, double a, double b, double c){
 
 void CInfectedPopulation::deterministic_SIRS(string filename, double S0, double I0, double tf){
 
+	// open file
 	ofstream outfile;
 	outfile.open(filename + ".dat");
-
 	cout << "write to ---> " << "'" << filename+".dat'" << endl;
 
+	// file headings
+	outfile << "# N = " << N_ << endl;
+	outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
+	outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
+	outfile << "# time, S, I, R" << endl;
+
+	// initial conditions
 	double S = S0, I = I0, R = N_-S0-I0;
 	double S_k1, S_k2, I_k1, I_k2, R_k1, R_k2;
-
-		outfile << "# N = " << N_ << endl;
-		outfile << "# (S0, I0, R0) = (" << S << ", " << I << ", " << R << ")" << endl;
-		outfile << "# (a, b, c) = (" << a_ << ", " << b_ << ", " << c_ << ")" << endl;
-		outfile << "# time, S, I, R" << endl;
 
 	for(double t = 0.0; t < tf; t += dt_){
 
@@ -145,11 +147,9 @@ void CInfectedPopulation::montecarlo_SIRS(string filename, int nsamples, int S0,
 		infile.open(filename + to_string(n) + ".dat");
 
 		// ignore first four lines
-		getline(infile, dummy);
-		getline(infile, dummy);
-		getline(infile, dummy);
-		getline(infile, dummy);
+		for(int i = 0; i < 4; ++i) getline(infile, dummy);
 
+		// calculate variance and average standard deviation
 		for(int i = 0; i < ntimes; ++i){
 
 			infile >> t >> S >> I >> R;
